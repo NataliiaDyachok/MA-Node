@@ -29,4 +29,3 @@ function getMaxProductsCost(arrProducts = products) {
 }
 
 module.exports = getMaxProductsCost;
-
