@@ -33,3 +33,4 @@ function changeProductsCost(arrProducts=products) {
 }
 
 module.exports = changeProductsCost;
+
