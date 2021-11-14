@@ -1,8 +1,10 @@
-// const services = require('../helpers');
 const { helper1: helpFilterItems,
   helper2: helpSortItems,
   helper3: helpFillPrice
 } = require('../helpers');
+
+const constants = require('../constants');
+const pathToJSONFile = constants.pathToJSONFile;
 
 function filter(req, res) {
   const { message, code } = helpFilterItems.filterByParams(req.params);
@@ -79,7 +81,6 @@ function dataPost(req, res) {
   }
 
   const fs = require('fs');
-  const pathToJSONFile = '../data.json';
   const content = JSON.stringify(JSON.parse(req.body));
    
   fs.writeFile(pathToJSONFile, content, 'utf8', function (err) {
@@ -88,9 +89,9 @@ function dataPost(req, res) {
       }
 
       console.log("The file was saved!");
-  }); 
+  });
   
-  //fs.writeFileSync(pathToJSONFile, content);
+  // fs.writeFileSync(pathToJSONFile, content);
 
   res.setHeader('Content-Type', 'application/json');
   res.write(JSON.stringify({message: content, code: 200}));

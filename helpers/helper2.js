@@ -1,4 +1,6 @@
-const products = require('../data.json');
+const constants = require('../constants');
+const products = require(constants.pathToJSONFile);
+
 const {validate: helpFilterItemsValidate} = require('./helper1');
 
 function getPriceWithoutSign(price) {

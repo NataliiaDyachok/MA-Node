@@ -1,5 +1,5 @@
-
-const products = require('../data.json');
+const constants = require('../constants');
+const products = require(constants.pathToJSONFile);
 
 const schema = {
   item: (value) => {
