@@ -1,3 +1,4 @@
+
 const constants = require('../constants');
 const products = require(constants.pathToJSONFile);
 
@@ -50,6 +51,10 @@ function filterByParams(params, arrProducts=products){
     code: arrProducts.length > 0? 200: 204,
     message: arrProducts,
   };
+}
+
+function filterItems(arrItems, parFilter, valFilter) {
+  return arrItems.filter(item => item[parFilter] === valFilter);
 }
 
 module.exports = {filterByParams, validate};
