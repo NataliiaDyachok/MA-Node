@@ -24,7 +24,15 @@ const schema = {
 };
 
 function validate(arrProducts) {
-  const errors = arrProducts.reduce((accumulator, product) => {
+  
+  let errors = [];
+  
+  if (!Array.isArray(arrProducts)){
+    errors.push(arrProducts);
+    return errors;
+  }
+  
+  errors = arrProducts.reduce((accumulator, product) => {
     const errors = Object.keys(product).filter((key) => {
       return !schema[key](product[key]);
     })

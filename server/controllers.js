@@ -15,10 +15,17 @@ function filter(req, res) {
   res.end();
 }
 
+function checkReqBody(reqBody){
+  if (!reqBody || 0 === reqBody.length){
+    return '[]';
+  }
+  return reqBody
+}
+
 function filterPost(req, res) {
   const { message, code } = helpFilterItems.filterByParams(
     req.params,
-    JSON.parse(req.body),
+    JSON.parse(checkReqBody(req.body))
   );
 
   res.setHeader('Content-Type', 'application/json');
@@ -40,7 +47,7 @@ function topprice(req, res) {
 function toppricePost(req, res) {
 
   const { message, code } = helpSortItems(
-    JSON.parse(req.body),
+    JSON.parse(checkReqBody(req.body))
   );
 
   res.setHeader('Content-Type', 'application/json');
@@ -61,7 +68,7 @@ function commonprice(req, res) {
 
 function commonpricePost(req, res) {
   const { message, code } = helpFillPrice(
-    JSON.parse(req.body),
+    JSON.parse(checkReqBody(req.body))
   );
 
   res.setHeader('Content-Type', 'application/json');
@@ -72,16 +79,27 @@ function commonpricePost(req, res) {
 
 function dataPost(req, res) {
   
-  const errorsArray = helpFilterItems.validate(JSON.parse(req.body));
+  const errorsArray = helpFilterItems.validate(
+    JSON.parse(checkReqBody(req.body))
+  );
+
   if (errorsArray.length>0){
+    const { message, code } = {message: errorsArray, code: 400};
+
     res.setHeader('Content-Type', 'application/json');
-    res.write(JSON.stringify({message: errorsArray, code: 400}));
+    res.write(JSON.stringify({ message, code }));
     res.statusCode = code;
     res.end();
+
+    console.log("The file wasn't saved!");
+
+    return;
   }
 
   const fs = require('fs');
-  const content = JSON.stringify(JSON.parse(req.body));
+  const content = JSON.stringify(
+    JSON.parse(checkReqBody(req.body))
+  );
    
   fs.writeFile(pathToJSONFile, content, 'utf8', function (err) {
       if (err) {
