@@ -10,27 +10,45 @@ function filter(req, res) {
   const { message, code } = helpFilterItems.filterByParams(req.params);
 
   res.setHeader('Content-Type', 'application/json');
+  res.writeHead(code, { 'Content-Type': 'text/plain' });
   res.write(JSON.stringify({message, code}));
   res.statusCode = code;
   res.end();
 }
 
+// function checkReqBody(reqBody){
+//   if (!reqBody || 0 === reqBody.length){
+//     return '[]';
+//   }
+//   return reqBody
+// }
+
 function checkReqBody(reqBody){
-  if (!reqBody || 0 === reqBody.length){
-    return '[]';
+  let retObj = { message: reqBody, code: 200};
+  
+  try {
+    JSON.parse(reqBody);
+  } catch (error) {
+    retObj.code = 400;
   }
-  return reqBody
+  return retObj;
 }
 
 function filterPost(req, res) {
-  const { message, code } = helpFilterItems.filterByParams(
-    req.params,
-    JSON.parse(checkReqBody(req.body))
-  );
-
+  let resObj = checkReqBody(req.body);
+  
+  if(resObj.code == 200)
+  {
+    resObj = helpFilterItems.filterByParams(
+      req.params,
+      JSON.parse((req.body))
+    );
+  }
+  
   res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify({message, code}));
-  res.statusCode = code;
+  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
+  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
+  res.statusCode = resObj.code;
   res.end();
 }
 
@@ -39,6 +57,7 @@ function topprice(req, res) {
   const { message, code } = helpSortItems();
 
   res.setHeader('Content-Type', 'application/json');
+  res.writeHead(code, { 'Content-Type': 'text/plain' });
   res.write(JSON.stringify({message, code}));
   res.statusCode = code;
   res.end();
@@ -46,13 +65,16 @@ function topprice(req, res) {
 
 function toppricePost(req, res) {
 
-  const { message, code } = helpSortItems(
-    JSON.parse(checkReqBody(req.body))
-  );
+  let resObj = checkReqBody(req.body);
+  if(resObj.code == 200)
+  {
+    resObj = helpSortItems(JSON.parse((req.body)));
+  }
 
   res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify({message, code}));
-  res.statusCode = code;
+  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
+  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
+  res.statusCode = resObj.code;
   res.end();
 }
 
@@ -61,60 +83,69 @@ function commonprice(req, res) {
   const { message, code } = helpFillPrice();
 
   res.setHeader('Content-Type', 'application/json');
+  res.writeHead(code, { 'Content-Type': 'text/plain' });
   res.write(JSON.stringify({message, code}));
   res.statusCode = code;
   res.end();
 }
 
 function commonpricePost(req, res) {
-  const { message, code } = helpFillPrice(
-    JSON.parse(checkReqBody(req.body))
-  );
+  let resObj = checkReqBody(req.body);
+  if(resObj.code == 200)
+  {
+    resObj = helpFillPrice(JSON.parse(req.body));
+  }
 
   res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify({message, code}));
-  res.statusCode = code;
+  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
+  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
+  res.statusCode = resObj.code;
   res.end();
 }
 
 function dataPost(req, res) {
-  
-  const errorsArray = helpFilterItems.validate(
-    JSON.parse(checkReqBody(req.body))
-  );
+  let resObj = checkReqBody(req.body);
+  if(resObj.code == 200)
+  {
+    
+    const errorsArray = helpFilterItems.validate(
+      JSON.parse(req.body)
+    );
+    if (errorsArray.length>0){
+      resObj = {message: errorsArray, code: 400};
 
-  if (errorsArray.length>0){
-    const { message, code } = {message: errorsArray, code: 400};
+      res.setHeader('Content-Type', 'application/json');
+      res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
+      res.write(JSON.stringify({ message: resObj.message, code: resObj.code }));
+      res.statusCode = resObj.code;
+      res.end();
 
-    res.setHeader('Content-Type', 'application/json');
-    res.write(JSON.stringify({ message, code }));
-    res.statusCode = code;
-    res.end();
+      console.log("The file wasn't saved!");
 
-    console.log("The file wasn't saved!");
+      return;
+    }
 
-    return;
+    const fs = require('fs');
+    const content = JSON.stringify(
+      JSON.parse(req.body)
+    );
+    
+    fs.writeFile(pathToJSONFile, content, 'utf8', function (err) {
+        if (err) {
+            return console.log(err);
+        }
+
+        console.log("The file was saved!");
+    });
+
   }
-
-  const fs = require('fs');
-  const content = JSON.stringify(
-    JSON.parse(checkReqBody(req.body))
-  );
-   
-  fs.writeFile(pathToJSONFile, content, 'utf8', function (err) {
-      if (err) {
-          return console.log(err);
-      }
-
-      console.log("The file was saved!");
-  });
-  
   // fs.writeFileSync(pathToJSONFile, content);
 
   res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify({message: content, code: 200}));
+  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
+  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
  
-  res.statusCode = 200;
+  res.statusCode = resObj.code;
   res.end();
 }
 
