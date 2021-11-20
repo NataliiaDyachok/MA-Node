@@ -46,9 +46,8 @@ function filterPost(req, res) {
   }
   
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
   res.statusCode = resObj.code;
+  res.write(JSON.stringify({message: resObj.message}));
   res.end();
 }
 
@@ -57,9 +56,8 @@ function topprice(req, res) {
   const { message, code } = helpSortItems();
 
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message, code}));
   res.statusCode = code;
+  res.write(JSON.stringify({message, code}));
   res.end();
 }
 
@@ -72,9 +70,8 @@ function toppricePost(req, res) {
   }
 
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
   res.statusCode = resObj.code;
+  res.write(JSON.stringify({message: resObj.message}));
   res.end();
 }
 
@@ -83,9 +80,8 @@ function commonprice(req, res) {
   const { message, code } = helpFillPrice();
 
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message, code}));
   res.statusCode = code;
+  res.write(JSON.stringify({message}));
   res.end();
 }
 
@@ -97,9 +93,8 @@ function commonpricePost(req, res) {
   }
 
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
   res.statusCode = resObj.code;
+  res.write(JSON.stringify({message: resObj.message}));
   res.end();
 }
 
@@ -115,9 +110,8 @@ function dataPost(req, res) {
       resObj = {message: errorsArray, code: 400};
 
       res.setHeader('Content-Type', 'application/json');
-      res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
-      res.write(JSON.stringify({ message: resObj.message, code: resObj.code }));
       res.statusCode = resObj.code;
+      res.write(JSON.stringify({ message: resObj.message}));
       res.end();
 
       console.log("The file wasn't saved!");
@@ -142,17 +136,17 @@ function dataPost(req, res) {
   // fs.writeFileSync(pathToJSONFile, content);
 
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(resObj.code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message: resObj.message, code: resObj.code}));
- 
   res.statusCode = resObj.code;
+  res.write(JSON.stringify({message: resObj.message}));
   res.end();
 }
 
 function notFound(req, res) {
-  const { message, code } = services.notFound();
-  res.statusCode = code;
-  res.write(message);
+  const resObj = { message: 'Bad Request', code: 400 };
+  
+  res.setHeader('Content-Type', 'application/json');
+  res.statusCode = resObj.code;
+  res.write(resObj.message);
   res.end();
 }
 

@@ -62,7 +62,7 @@ function filterByParams(params, arrProducts=products){
 }
 
 function filterItems(arrItems, parFilter, valFilter) {
-  return arrItems.filter(item => item[parFilter] === valFilter);
+  return arrItems.filter(item => item[parFilter] == valFilter);
 }
 
 module.exports = {filterByParams, validate};
