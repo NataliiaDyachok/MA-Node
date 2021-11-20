@@ -10,18 +10,10 @@ function filter(req, res) {
   const { message, code } = helpFilterItems.filterByParams(req.params);
 
   res.setHeader('Content-Type', 'application/json');
-  res.writeHead(code, { 'Content-Type': 'text/plain' });
-  res.write(JSON.stringify({message, code}));
   res.statusCode = code;
+  res.write(JSON.stringify({message, code}));
   res.end();
 }
-
-// function checkReqBody(reqBody){
-//   if (!reqBody || 0 === reqBody.length){
-//     return '[]';
-//   }
-//   return reqBody
-// }
 
 function checkReqBody(reqBody){
   let retObj = { message: reqBody, code: 200};
