@@ -1,5 +1,6 @@
 
-const products = require('../data.json');
+const constants = require('../constants');
+const products = require(constants.pathToJSONFile);
 
 const schema = {
   item: (value) => {
@@ -23,7 +24,15 @@ const schema = {
 };
 
 function validate(arrProducts) {
-  const errors = arrProducts.reduce((accumulator, product) => {
+  
+  let errors = [];
+  
+  if (!Array.isArray(arrProducts)){
+    errors.push(arrProducts);
+    return errors;
+  }
+  
+  errors = arrProducts.reduce((accumulator, product) => {
     const errors = Object.keys(product).filter((key) => {
       return !schema[key](product[key]);
     })
@@ -50,6 +59,10 @@ function filterByParams(params, arrProducts=products){
     code: arrProducts.length > 0? 200: 204,
     message: arrProducts,
   };
+}
+
+function filterItems(arrItems, parFilter, valFilter) {
+  return arrItems.filter(item => item[parFilter] == valFilter);
 }
 
 module.exports = {filterByParams, validate};
