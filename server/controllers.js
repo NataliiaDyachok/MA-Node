@@ -1,10 +1,11 @@
 const fs = require('fs');
-const util = require('util');
+
 
 const { helper1: helpFilterItems,
   helper2: helpSortItems,
   helper3: helpFillPrice,
   helperDiscountPromise,
+  helperDiscountPromisify,
 } = require('../helpers');
 
 const constants = require('../constants');
@@ -160,24 +161,24 @@ function discountPromise(req, res) {
 
 }
 
-function discountPromisify(req, res) {
+async function discountPromisify(req, res) {
 
-  const promises = helperDiscountPromise();
-  Promise.all(promises)
-    .then(items => {
-      const code = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = code;
-      res.write(JSON.stringify({items, code}));
-      res.end();
-    })
-    .catch((message) => {
-      const code = 400;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = code;
-      res.write(JSON.stringify({message, code}));
-      res.end();
-    });
+  const promises = helperDiscountPromisify();
+  let code = 200;
+  let items = [];
+
+  try{
+
+    items = await Promise.all(promises);
+
+  } catch{
+    code = 400;
+  } finally{
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = code;
+    res.write(JSON.stringify({message: items}));
+    res.end();
+  }
 
 }
 

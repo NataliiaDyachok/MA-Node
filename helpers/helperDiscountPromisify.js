@@ -1,3 +1,4 @@
+const util = require('util');
 const constants = require('../constants');
 // eslint-disable-next-line import/no-dynamic-require
 const products = require(constants.pathToJSONFile);
@@ -6,13 +7,13 @@ const getRandomDiscount = require('./helperRandomizer');
 
 const { getProductWithDiscount } = require('./helperCost') ;
 
-function getProductPromise(product) {
+function getProductPromisify(product) {
   // eslint-disable-next-line no-unused-vars
-  return new Promise((resolve, reject) => {
+  return util.promisify((reject, resolve) => {
 
     const callbackSuccess = (discount) => {
       const productWithDiscount = getProductWithDiscount(product, discount);
-      resolve(productWithDiscount);
+      resolve (productWithDiscount);
     };
 
     const callbackErr = () => {
@@ -29,14 +30,15 @@ function getProductPromise(product) {
     };
 
     getRandomDiscount(callback);
-  });
+
+   });
 }
 
-function getProductsPromises(arrProducts=products) {
+function getArrayProductsPromisify(arrProducts=products) {
   const productsPromises =
-    arrProducts.map(product => getProductPromise(product));
+    arrProducts.map(product => getProductPromisify(product));
 
   return productsPromises;
 }
 
-module.exports = getProductsPromises;
+module.exports = getArrayProductsPromisify;
