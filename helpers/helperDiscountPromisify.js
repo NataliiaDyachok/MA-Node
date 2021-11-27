@@ -5,40 +5,61 @@ const products = require(constants.pathToJSONFile);
 
 const getRandomDiscount = require('./helperRandomizer');
 
+const getRandomDiscountPromisify =
+  util.promisify(getRandomDiscount);
+
 const { getProductWithDiscount } = require('./helperCost') ;
 
-function getProductPromisify(product) {
-  // eslint-disable-next-line no-unused-vars
-  return util.promisify((reject, resolve) => {
-
-    const callbackSuccess = (discount) => {
-      const productWithDiscount = getProductWithDiscount(product, discount);
-      resolve (productWithDiscount);
-    };
-
-    const callbackErr = () => {
-      const innerCallback = (err, randomNumber) => {
-        // eslint-disable-next-line no-unused-expressions
-        err ? resolve(product) : callbackSuccess(randomNumber);
-      };
-      getRandomDiscount(innerCallback);
-    };
-
-    const callback = (err, randomNumber) => {
-      // eslint-disable-next-line no-unused-expressions
-      err ? callbackErr(err) : callbackSuccess(randomNumber);
-    };
-
-    getRandomDiscount(callback);
-
-   });
-}
-
 function getArrayProductsPromisify(arrProducts=products) {
-  const productsPromises =
-    arrProducts.map(product => getProductPromisify(product));
 
-  return productsPromises;
+  // const itemsPromisify = arrProducts
+  // .map(product => getRandomDiscountPromisify()
+  //   .then((discount) => getProductWithDiscount(product, discount)
+  //       , () => {
+  //        getRandomDiscountPromisify()
+  //        .then((discount) => getProductWithDiscount(product, discount)
+  //        , () => product);
+  //      }
+  //    )
+  // );
+
+  // const itemsPromisify = (arrProducts
+  //   .map(product => getRandomDiscountPromisify()
+  //     .then((discount) => getProductWithDiscount(product, discount))
+  //     .catch(() => {
+  //        getRandomDiscountPromisify()
+  //        .then((discount) => getProductWithDiscount(product, discount))
+  //        .catch(() => (product));
+  //      })
+  // ));
+
+  // const itemsPromisify = (arrProducts
+  //   .map((product) =>
+  //     getRandomDiscountPromisify()
+  //       .then((discount) => discount)
+  //       .catch(() => {
+  //         getRandomDiscountPromisify()
+  //         .then((discount) => discount)
+  //         .catch(() => 0);
+  //       })
+  //       .then((discount) => getProductWithDiscount(product, discount))
+
+  //   ));
+
+
+  const itemsPromisify = (arrProducts
+    .map((product) =>
+        getRandomDiscountPromisify()
+          .then((discount) => discount)
+          .catch(() => {
+            getRandomDiscountPromisify()
+            .then((discount) => discount)
+            .catch(() => 0);
+          })
+          .then((discount) => getProductWithDiscount(product, discount))
+    ));
+
+  return itemsPromisify;
 }
 
 module.exports = getArrayProductsPromisify;

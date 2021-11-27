@@ -10,8 +10,12 @@ function getCost(product) {
 }
 
 function getProductWithDiscount(product, discount) {
+
+  const discountProc = Number(discount).isNaN
+  || discount === undefined ? 0 : discount;
+
   const price = getCost(product);
-  const priceWithDiscount = price * (100 - discount) / 100;
+  const priceWithDiscount = price * (100 - discountProc) / 100;
   return { ...product, priceWithDiscount };
 }
 

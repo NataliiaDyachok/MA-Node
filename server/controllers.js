@@ -1,11 +1,11 @@
 const fs = require('fs');
 
-
 const { helper1: helpFilterItems,
   helper2: helpSortItems,
   helper3: helpFillPrice,
   helperDiscountPromise,
   helperDiscountPromisify,
+  // helperRandomizer,
 } = require('../helpers');
 
 const constants = require('../constants');
@@ -161,36 +161,107 @@ function discountPromise(req, res) {
 
 }
 
-async function discountPromisify(req, res) {
+function discountPromisePost(req, res) {
+  let resObj = checkReqBody(req.body);
 
-  const promises = helperDiscountPromisify();
-  let code = 200;
-  let items = [];
+  if(resObj.code === 200){
+    const errorsArray = helpFilterItems.validate(JSON.parse(req.body));
+    if (errorsArray.length>0){
+      resObj = {
+        code: 400,
+        message: errorsArray,
+      };
+    }
+  }
 
-  try{
+  if(resObj.code === 200)  {
+    const promises = helperDiscountPromise(
+      JSON.parse(req.body)
+    );
 
-    items = await Promise.all(promises);
-
-  } catch{
-    code = 400;
-  } finally{
+    Promise.all(promises)
+    .then(items => {
+      const code = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = code;
+      res.write(JSON.stringify({message: items}));
+      res.end();
+    })
+    .catch((message) => {
+      const code = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = code;
+      res.write(JSON.stringify({errMessage: message}));
+      res.end();
+    });
+  } else{
     res.setHeader('Content-Type', 'application/json');
-    res.statusCode = code;
-    res.write(JSON.stringify({message: items}));
+    res.statusCode = resObj.code;
+    res.write(JSON.stringify({message: resObj.message}));
     res.end();
   }
 
+
+
 }
 
-function discountPromisePost(req, res) {
-  const { message, code } = helperDiscountPromise(
-    JSON.parse(checkReqBody(req.body))
-  );
+async function discountPromisify(req, res) {
 
-  res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify({message, code}));
-  res.statusCode = code;
-  res.end();
+  const promises = helperDiscountPromisify();
+  Promise.all(promises)
+    .then(items => {
+      const code = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = code;
+      res.write(JSON.stringify({message: items}));
+      res.end();
+    })
+    .catch((message) => {
+      const code = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = code;
+      res.write(JSON.stringify({message}));
+      res.end();
+    });
+
+}
+
+async function discountPromisifyPost(req, res){
+  let resObj = checkReqBody(req.body);
+
+  if(resObj.code === 200){
+    const errorsArray = helpFilterItems.validate(JSON.parse(req.body));
+    if (errorsArray.length>0){
+      resObj = {
+        code: 400,
+        message: errorsArray,
+      };
+    }
+  }
+
+  if(resObj.code === 200)  {
+    const promises = helperDiscountPromisify(JSON.parse(req.body));
+    Promise.all(promises)
+      .then(items => {
+        const code = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.statusCode = code;
+        res.write(JSON.stringify({message: items}));
+        res.end();
+      })
+      .catch((message) => {
+        const code = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.statusCode = code;
+        res.write(JSON.stringify({message}));
+        res.end();
+      });
+  } else{
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = resObj.code;
+    res.write(JSON.stringify({message: resObj.message}));
+    res.end();
+  }
 }
 
 async function discountPromiseAsyncAwait(req, res) {
@@ -204,9 +275,44 @@ async function discountPromiseAsyncAwait(req, res) {
   } finally{
     res.setHeader('Content-Type', 'application/json');
     res.statusCode = code;
-    res.write(JSON.stringify({items, code}));
+    res.write(JSON.stringify({message: items}));
     res.end();
   }
+}
+
+async function discountPromiseAsyncAwaitPost(req, res) {
+  let resObj = checkReqBody(req.body);
+
+  if(resObj.code === 200){
+    const errorsArray = helpFilterItems.validate(JSON.parse(req.body));
+    if (errorsArray.length>0){
+      resObj = {
+        code: 400,
+        message: errorsArray,
+      };
+    }
+  }
+
+  if(resObj.code === 200)  {
+    let items = [];
+    const promises = helperDiscountPromise(JSON.parse(req.body));
+    try{
+      items = await Promise.all(promises);
+    } catch{
+      resObj.code = 400;
+    } finally{
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = resObj.code;
+      res.write(JSON.stringify({message: items}));
+      res.end();
+    }
+  } else{
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = resObj.code;
+    res.write(JSON.stringify({message: resObj.message}));
+    res.end();
+  }
+
 }
 
 
@@ -230,6 +336,8 @@ module.exports = {
   discountPromise,
   discountPromisePost,
   discountPromiseAsyncAwait,
+  discountPromiseAsyncAwaitPost,
   discountPromisify,
+  discountPromisifyPost,
   notFound,
 };

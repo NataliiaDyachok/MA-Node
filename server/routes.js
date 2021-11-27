@@ -23,14 +23,18 @@ module.exports = (req, res) => {
 
   if (pathname === '/discount/promise' && method === 'GET')
     return controllers.discountPromise(req, res);
-  // if (pathname === '/discount/promise' && method === 'POST')
-  //   return controllers.discountPromisePost(req, res);
+  if (pathname === '/discount/promise' && method === 'POST')
+    return controllers.discountPromisePost(req, res);
 
   if (pathname === '/discount/async' && method === 'GET')
     return controllers.discountPromiseAsyncAwait(req, res);
+    if (pathname === '/discount/async' && method === 'POST')
+    return controllers.discountPromiseAsyncAwaitPost(req, res);
 
   if (pathname === '/discount/promisify' && method === 'GET')
     return controllers.discountPromisify(req, res);
+  if (pathname === '/discount/promisify' && method === 'POST')
+    return controllers.discountPromisifyPost(req, res);
 
   return controllers.notFound(req, res);
 
