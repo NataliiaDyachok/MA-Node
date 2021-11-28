@@ -4,6 +4,7 @@ const { helper1: helpFilterItems,
   helper2: helpSortItems,
   helper3: helpFillPrice,
   helperDiscountPromise,
+  helperDiscountPromiseAsyncAwait,
   helperDiscountPromisify,
   // helperRandomizer,
 } = require('../helpers');
@@ -142,20 +143,12 @@ function dataPost(req, res) {
 
 function discountPromise(req, res) {
 
-  const promises = helperDiscountPromise();
-  Promise.all(promises)
+  helperDiscountPromise()
     .then(items => {
       const code = 200;
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = code;
-      res.write(JSON.stringify({items, code}));
-      res.end();
-    })
-    .catch((message) => {
-      const code = 400;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = code;
-      res.write(JSON.stringify({message, code}));
+      res.write(JSON.stringify({message: items}));
       res.end();
     });
 
@@ -174,59 +167,72 @@ function discountPromisePost(req, res) {
     }
   }
 
-  if(resObj.code === 200)  {
-    const promises = helperDiscountPromise(
-      JSON.parse(req.body)
-    );
+  res.setHeader('Content-Type', 'application/json');
+  res.statusCode = resObj.code;
 
-    Promise.all(promises)
+  if(resObj.code === 200)  {
+    helperDiscountPromise(JSON.parse(req.body))
     .then(items => {
-      const code = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = code;
       res.write(JSON.stringify({message: items}));
-      res.end();
-    })
-    .catch((message) => {
-      const code = 400;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = code;
-      res.write(JSON.stringify({errMessage: message}));
       res.end();
     });
   } else{
-    res.setHeader('Content-Type', 'application/json');
-    res.statusCode = resObj.code;
     res.write(JSON.stringify({message: resObj.message}));
     res.end();
   }
-
-
-
 }
 
-async function discountPromisify(req, res) {
-
-  const promises = helperDiscountPromisify();
-  Promise.all(promises)
+function discountPromisify(req, res) {
+  helperDiscountPromisify()
     .then(items => {
       const code = 200;
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = code;
       res.write(JSON.stringify({message: items}));
       res.end();
-    })
-    .catch((message) => {
-      const code = 400;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = code;
-      res.write(JSON.stringify({message}));
-      res.end();
     });
-
 }
 
-async function discountPromisifyPost(req, res){
+function discountPromisifyPost(req, res){
+  let resObj = checkReqBody(req.body);
+
+  if(resObj.code === 200){
+    const errorsArray = helpFilterItems.validate(JSON.parse(req.body));
+    if (errorsArray.length>0){
+      resObj = {
+        code: 400,
+        message: errorsArray,
+      };
+    }
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  res.statusCode = resObj.code;
+
+  if(resObj.code === 200)  {
+    helperDiscountPromisify(JSON.parse(req.body))
+    .then(items => {
+      res.write(JSON.stringify({message: items}));
+      res.end();
+    });
+  } else{
+    res.write(JSON.stringify({message: resObj.message}));
+    res.end();
+  }
+}
+
+function discountPromiseAsyncAwait(req, res) {
+  helperDiscountPromiseAsyncAwait()
+    .then(items => {
+      const code = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = code;
+      res.write(JSON.stringify({message: items}));
+      res.end();
+    });
+}
+
+function discountPromiseAsyncAwaitPost(req, res) {
   let resObj = checkReqBody(req.body);
 
   if(resObj.code === 200){
@@ -240,72 +246,13 @@ async function discountPromisifyPost(req, res){
   }
 
   if(resObj.code === 200)  {
-    const promises = helperDiscountPromisify(JSON.parse(req.body));
-    Promise.all(promises)
-      .then(items => {
-        const code = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.statusCode = code;
-        res.write(JSON.stringify({message: items}));
-        res.end();
-      })
-      .catch((message) => {
-        const code = 400;
-        res.setHeader('Content-Type', 'application/json');
-        res.statusCode = code;
-        res.write(JSON.stringify({message}));
-        res.end();
-      });
-  } else{
-    res.setHeader('Content-Type', 'application/json');
-    res.statusCode = resObj.code;
-    res.write(JSON.stringify({message: resObj.message}));
-    res.end();
-  }
-}
-
-async function discountPromiseAsyncAwait(req, res) {
-  let code = 200;
-  let items = [];
-  const promises = helperDiscountPromise();
-  try{
-    items = await Promise.all(promises);
-  } catch{
-    code = 400;
-  } finally{
-    res.setHeader('Content-Type', 'application/json');
-    res.statusCode = code;
-    res.write(JSON.stringify({message: items}));
-    res.end();
-  }
-}
-
-async function discountPromiseAsyncAwaitPost(req, res) {
-  let resObj = checkReqBody(req.body);
-
-  if(resObj.code === 200){
-    const errorsArray = helpFilterItems.validate(JSON.parse(req.body));
-    if (errorsArray.length>0){
-      resObj = {
-        code: 400,
-        message: errorsArray,
-      };
-    }
-  }
-
-  if(resObj.code === 200)  {
-    let items = [];
-    const promises = helperDiscountPromise(JSON.parse(req.body));
-    try{
-      items = await Promise.all(promises);
-    } catch{
-      resObj.code = 400;
-    } finally{
+    helperDiscountPromiseAsyncAwait(JSON.parse(req.body))
+    .then(items => {
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = resObj.code;
       res.write(JSON.stringify({message: items}));
       res.end();
-    }
+    });
   } else{
     res.setHeader('Content-Type', 'application/json');
     res.statusCode = resObj.code;
