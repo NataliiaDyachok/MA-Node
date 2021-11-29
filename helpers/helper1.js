@@ -23,7 +23,8 @@ function validate(arrProducts) {
 
   errors = arrProducts.reduce((accumulator, product) => {
     errors = Object.keys(product)
-      .filter((key) => !schema[key](product[key]));
+      .filter((key) =>
+        !schema[key] || !schema[key](product[key]));
     return [...accumulator, ...errors];
   }, []);
 
