@@ -1,4 +1,5 @@
 const constants = require('../constants');
+// eslint-disable-next-line import/no-dynamic-require
 const products = require(constants.pathToJSONFile);
 
 const {validate: helpFilterItemsValidate} = require('./helper1');
@@ -22,7 +23,7 @@ function getMaxProductsCost(arrProducts = products) {
       message: errorsArray,
     };
   }
-  
+
   const maxCostItem = arrProducts.sort((a, b) => getCost(b) - getCost(a))[0];
   return {
     code: 200,
