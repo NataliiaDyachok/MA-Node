@@ -1,4 +1,7 @@
 {
     "github-enterprise.uri": "https://github.com/NataliiaDyachok/MA-Node.git",
-    "github.gitAuthentication": false
+    "github.gitAuthentication": false,
+    "cSpell.words": [
+        "alerconsole"
+    ]
 }
