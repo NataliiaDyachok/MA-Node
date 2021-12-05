@@ -1,4 +1,5 @@
 const routes = require('./routes');
+const { handleStreamRoutes } = require('./routesStream');
 
 const connections = new Map();
 
@@ -14,6 +15,11 @@ function requestHandler (req, res) {
 
   connections.set(res.connection, res);
 
+  if (req.headers['content-type'] === 'text/csv'){
+    handleStreamRoutes(req, res)
+      .catch(err => console.error('CSV handler failed', err));
+  }
+
   let body = [];
 
   req
@@ -28,13 +34,6 @@ function requestHandler (req, res) {
       routes({ ...req, pathname, body, params: searchParams }, res);
     });
 
-    // .on('SIGTERM', () => {
-    //   console.info('SIGTERM signal received.');
-    //   console.log('Closing http server.');
-    //   server.close(() => {
-    //     console.log('Http server closed.');
-    //   });
-    // });
 };
 
 module.exports = {requestHandler, connections};
