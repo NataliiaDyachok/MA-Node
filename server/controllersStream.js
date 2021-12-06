@@ -1,5 +1,5 @@
 const {pipeline} = require('stream');
-const {createGunzip} = require('zlib');
+// const {createGunzip} = require('zlib');
 // const {promisify} = require('util');
 const util = require('util');
 
@@ -12,8 +12,10 @@ const promisifiedPipeline = util.promisify(pipeline);
 
 const {scvToJson: createCsvToJson} = require('../helpers');
 
+
+
 async function uploadCsv(inputStream){
-  const gunZip = createGunzip();
+  // const gunZip = createGunzip();
 
   const timestamp = Date.now();
   const filePath = path.resolve(__dirname, `../upload/${timestamp}.json`);
@@ -22,8 +24,8 @@ async function uploadCsv(inputStream){
   const scvToJson = createCsvToJson();
 
   try{
-    await promisifiedPipeline(inputStream, gunZip, scvToJson, outputStream);
-    // await promisifiedPipeline(inputStream, scvToJson, outputStream);
+    // await promisifiedPipeline(inputStream, gunZip, scvToJson, outputStream);
+    await promisifiedPipeline(inputStream, scvToJson, outputStream);
   } catch (err) {
     console.error('CSV pipeline failed', err);
   }

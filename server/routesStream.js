@@ -10,15 +10,15 @@ async function handleStreamRoutes(request, response){
     } catch (err) {
       console.error('Failed to upload CSV', err);
 
-      response.setHeader('Content-Type', 'application/json');
+      // response.setHeader('Content-Type', 'text');
       response.statusCode = 500;
       response.end(JSON.stringify({status: 'error'}));
       return;
     }
 
-    response.setHeader('Content-Type', 'application/json');
-    response.statusCode = 200;
-    response.end(JSON.stringify({status: 'ok'}));
+    // response.setHeader('Content-Type', 'text');
+    // response.statusCode = 200;
+    // response.end(JSON.stringify({status: 'ok'}));
     return;
   }
 
