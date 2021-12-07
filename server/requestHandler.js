@@ -9,17 +9,18 @@ function requestHandler (req, res) {
   const {
     url,
     headers: { host },
+    method,
   } = req;
 
   const { pathname, searchParams } = new URL(url, `https://${host}`);
 
   connections.set(res.connection, res);
 
-  if (req.headers['content-type'] === 'text/csv'){
+  if (req.headers['content-type'] === 'text/csv' && method === 'PUT'){
     handleStreamRoutes(req, res)
       .catch(err => console.error('CSV handler failed', err));
 
-    return true;
+    return;
   }
 
   let body = [];
