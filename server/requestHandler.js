@@ -18,6 +18,8 @@ function requestHandler (req, res) {
   if (req.headers['content-type'] === 'text/csv'){
     handleStreamRoutes(req, res)
       .catch(err => console.error('CSV handler failed', err));
+
+    return true;
   }
 
   let body = [];

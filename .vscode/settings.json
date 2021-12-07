@@ -3,5 +3,6 @@
     "github.gitAuthentication": false,
     "cSpell.words": [
         "alerconsole"
-    ]
+    ],
+    "json.maxItemsComputed": 25000
 }

@@ -21,7 +21,8 @@ async function uploadCsv(inputStream){
   const filePath = path.resolve(__dirname, `../upload/${timestamp}.json`);
 
   const outputStream = fs.createWriteStream(filePath);
-  const scvToJson = createCsvToJson();
+  const scvToJson = createCsvToJson()
+  .catch(err => console.error('CSV validate failed', err));
 
   try{
     // await promisifiedPipeline(inputStream, gunZip, scvToJson, outputStream);

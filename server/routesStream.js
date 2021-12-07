@@ -16,9 +16,9 @@ async function handleStreamRoutes(request, response){
       return;
     }
 
-    // response.setHeader('Content-Type', 'text');
-    // response.statusCode = 200;
-    // response.end(JSON.stringify({status: 'ok'}));
+    response.setHeader('Content-Type', 'text');
+    response.statusCode = 200;
+    response.end(JSON.stringify({status: 'ok'}));
     return;
   }
 
