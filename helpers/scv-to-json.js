@@ -3,7 +3,7 @@ const {validate: helpFilterItemsValidate} = require('./helper1');
 
 function getArrayUnique(arrScr){
   const arrayUnique =  arrScr.reduce((retArr, productItem) => {
-    
+
     const hasWeight = typeof productItem.weight  !== 'undefined'
       && typeof productItem.pricePerKilo !== 'undefined';
     // eslint-disable-next-line arrow-body-style
@@ -30,6 +30,18 @@ function getArrayUnique(arrScr){
   return arrayUnique;
 }
 
+function formatAndCheckRow(sRow){
+  // eslint-disable-next-line no-useless-escape
+  let formatRow =  sRow.replace('\"', '');
+  // eslint-disable-next-line no-useless-escape
+  formatRow =  formatRow.replace(/(\d+),(\d+)/, '$1\.$2');
+
+  return formatRow.split(',')
+    .map(element => element.replace('.', ','))
+  // eslint-disable-next-line no-useless-escape
+    .map(element => element.replace('\"', ''));
+}
+
 function createCsvToJson(){
   let isFirst = true;
   let sFirstRow = '';
@@ -37,23 +49,55 @@ function createCsvToJson(){
   let sAdditionalLine = '';
   let globalArrayUnique = [];
 
+  let arrFirstRow = [];
+  let arrLastRow = [];
+
+  let sAdditionaFirstRow = '';
+  let sAdditionaLastRow = '';
+
   const transform = (chunk, encoding, callback) => {
-    let  arrData = chunk.toString().split('\n');
+    let  arrData = chunk.toString().split(/\r?\n/); // /\r|\n/
 
     if (isFirst){
-      // {}
       arrData.shift();
-      // isFirst = false;
-      // callback(null, 'JSON string\n');
-      // return;
     } else {
       arrData = arrData.filter(element => element.trim() !== '' );
       sFirstRow = arrData.shift();
-      sAdditionalLine = sLastRow.concat(sFirstRow);
+
+      arrFirstRow = [];
+      if (sFirstRow !== '' ){
+        arrFirstRow = formatAndCheckRow(sFirstRow);
+        console.log(arrFirstRow);
+      }
+
+      sAdditionalLine = '';
+      sAdditionaFirstRow = '';
+      sAdditionaLastRow = '';
+      if (arrFirstRow.length !== 6 ||  arrLastRow.length !== 6)
+        sAdditionalLine = arrLastRow.join(',').concat(arrFirstRow.join(','));
+      else {
+        sAdditionaFirstRow = sFirstRow;
+        sAdditionaLastRow = sLastRow;
+      }
+
     }
 
     sLastRow = arrData.pop();
-    arrData = [...arrData, sAdditionalLine];
+
+    arrLastRow = [];
+    if (sLastRow !== '' ){
+      arrLastRow = formatAndCheckRow(sLastRow);
+      console.log(arrLastRow);
+    }
+
+    if (sAdditionalLine !== ''){
+      console.log(sAdditionalLine);
+      arrData.push(sAdditionalLine);
+    }
+    else{
+      arrData.push(sAdditionaFirstRow);
+      arrData.push(sAdditionaLastRow);
+    }
 
     isFirst = false;
 
@@ -84,11 +128,15 @@ function createCsvToJson(){
     }
 
     const arrayUnique = getArrayUnique(arrData);
-    globalArrayUnique = globalArrayUnique.concat(arrayUnique);
+    // globalArrayUnique = globalArrayUnique.concat(arrayUnique);
+    arrayUnique.forEach(elementProduct => {
+      globalArrayUnique.push(elementProduct);
+    });
+
     globalArrayUnique = getArrayUnique(globalArrayUnique);
 
-    const content = JSON.stringify(globalArrayUnique, null, 2);
-    callback(null, content);
+    // const content = JSON.stringify(arrayUnique, null, 2);
+    callback(null, '');
   };
 
   // eslint-disable-next-line no-underscore-dangle
@@ -97,7 +145,10 @@ function createCsvToJson(){
   // eslint-disable-next-line no-unused-vars
   const flush = callback => {
     console.log('No more data is read.');
-    callback(null, '\nFinish!');
+    // callback(null, '\nFinish!');
+
+    const content = JSON.stringify(globalArrayUnique, null, 2);
+    callback(null, content);
   };
   // eslint-disable-next-line no-underscore-dangle
   Transform.prototype._flush = flush;

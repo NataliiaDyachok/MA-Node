@@ -1,3 +1,4 @@
+/* eslint-disable import/no-dynamic-require */
 const {pipeline} = require('stream');
 // const {createGunzip} = require('zlib');
 // const {promisify} = require('util');
@@ -21,12 +22,17 @@ async function uploadCsv(inputStream){
   const filePath = path.resolve(__dirname, `../upload/${timestamp}.json`);
 
   const outputStream = fs.createWriteStream(filePath);
-  const scvToJson = createCsvToJson()
-  .catch(err => console.error('CSV validate failed', err));
+  const scvToJson = createCsvToJson();
+  // .catch(err => console.error('CSV validate failed', err));
 
   try{
     // await promisifiedPipeline(inputStream, gunZip, scvToJson, outputStream);
     await promisifiedPipeline(inputStream, scvToJson, outputStream);
+
+    // eslint-disable-next-line global-require
+    // const arrLoadedData = require(filePath);
+    // console.log(arrLoadedData);
+
   } catch (err) {
     console.error('CSV pipeline failed', err);
   }

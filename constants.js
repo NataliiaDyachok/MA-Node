@@ -21,9 +21,17 @@ const getMostRecentFile = (dir) => {
 
 const lastUploadedJSONFile = getMostRecentFile(getFullPath());
 
-const pathToJSONFileForExport =
+// const pathToJSONFileForExport =
+//   typeof lastUploadedJSONFile === 'undefined'
+//     ? pathToJSONFile
+//     : getFullPath(lastUploadedJSONFile.file);
+
+const getPathToMostRecentFile = () =>
   typeof lastUploadedJSONFile === 'undefined'
     ? pathToJSONFile
     : getFullPath(lastUploadedJSONFile.file);
 
-module.exports.pathToJSONFile = pathToJSONFileForExport;
+module.exports = {
+  getPathToMostRecentFile,
+  pathToJSONFile
+};

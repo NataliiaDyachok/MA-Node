@@ -1,6 +1,6 @@
-const constants = require('../constants');
-// eslint-disable-next-line import/no-dynamic-require
-const products = require(constants.pathToJSONFile);
+/* eslint-disable global-require */
+const {getPathToMostRecentFile} = require('../constants');
+
 const {validate: helpFilterItemsValidate} = require('./helper1');
 
 function getPriceWithoutSign(price) {
@@ -14,7 +14,10 @@ function getCost(product) {
     : product.quantity * getPriceWithoutSign(product.pricePerItem);
 }
 
-function changeProductsCost(arrProducts=products) {
+function changeProductsCost(arrProducts
+  // eslint-disable-next-line import/no-dynamic-require
+  = require(getPathToMostRecentFile())
+) {
   const errorsArray = helpFilterItemsValidate(arrProducts);
   if (errorsArray.length>0){
     return {

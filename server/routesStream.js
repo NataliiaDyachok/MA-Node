@@ -22,7 +22,7 @@ async function handleStreamRoutes(request, response){
     return;
   }
 
-  notFound(response);
+  notFound(request, response);
 }
 
 module.exports = {handleStreamRoutes};
