@@ -1,11 +1,17 @@
-const { readdirSync, lstatSync } = require('fs');
+const { readdirSync, lstatSync, existsSync, mkdirSync} = require('fs');
+
+// fs.existsSync("directory") || fs.mkdirSync("directory");
 
 const path = require('path');
 
 const pathToJSONFile = path.resolve(__dirname, 'data.json');
 
-const getFullPath = (sFile = '') =>
-  path.resolve(__dirname, './upload', sFile);
+const getFullPath = (sFile = '') => {
+  const sPath = path.resolve(__dirname, './upload');
+  if (!existsSync(sPath)) mkdirSync(sPath);
+  
+  return path.resolve(__dirname, './upload', sFile);
+}
 
 const orderReccentFiles = (dir) =>
   readdirSync(dir)
