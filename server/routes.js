@@ -1,7 +1,6 @@
 const express = require('express');
 const controllers = require('./controllers');
 
-// const router = express.Router;
 const app = express();
 
 app.route('/filter')
@@ -48,8 +47,10 @@ app.use((err, req, res, next) => {
       return res.sendStatus(500);
   }
 
+  if (err.status) res.sendStatus(err.status);
   next();
 });
+
 
 module.exports =  app;
 

@@ -1,6 +1,7 @@
 const { notFound } = require('./controllers');
 const { uploadCsv } = require('./controllersStream');
 
+// eslint-disable-next-line consistent-return
 async function handleStreamRoutes(request, response){
   const {url, method} = request;
 
@@ -19,6 +20,7 @@ async function handleStreamRoutes(request, response){
     response.setHeader('Content-Type', 'text');
     response.statusCode = 200;
     response.end(JSON.stringify({status: 'ok'}));
+    // eslint-disable-next-line consistent-return
     return;
   }
 
