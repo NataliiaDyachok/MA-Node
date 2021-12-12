@@ -19,9 +19,9 @@ const SHUTDOWN_TIMEOUT = 5000;
 const connections = new Map();
 
 // eslint-disable-next-line import/order
-// const io = require('socket.io').listen(server);
-// eslint-disable-next-line import/order
-const io = require('socket.io')(server);
+const io  = require('socket.io')(server);
+
+app.io = io;
 
 const timeout = msec => new Promise(resolve => {
   setTimeout(resolve, msec);
