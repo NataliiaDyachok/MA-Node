@@ -1,7 +1,5 @@
-
-const constants = require('../constants');
-// eslint-disable-next-line import/no-dynamic-require
-const products = require(constants.pathToJSONFile);
+/* eslint-disable global-require */
+const {getPathToMostRecentFile} = require('../constants');
 
 const schema = {
   item: (value) => typeof value === 'string',
@@ -36,7 +34,11 @@ function filterItems(arrItems, parFilter, valFilter) {
   return arrItems.filter(item => item[parFilter] == valFilter);
 }
 
-function filterByParams(params, arrProducts=products){
+function filterByParams(params,
+    arrProducts
+      // eslint-disable-next-line import/no-dynamic-require
+      = require(getPathToMostRecentFile())
+) {
   const errorsArray = validate(arrProducts);
   if (errorsArray.length>0){
     return {

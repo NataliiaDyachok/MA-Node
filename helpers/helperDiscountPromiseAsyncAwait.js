@@ -1,6 +1,6 @@
-const constants = require('../constants');
-// eslint-disable-next-line import/no-dynamic-require
-const products = require(constants.pathToJSONFile);
+// const constants = require('../constants');
+/* eslint-disable global-require */
+const {getPathToMostRecentFile} = require('../constants');
 
 const getRandomDiscount = require('./helperRandomizer');
 
@@ -22,7 +22,10 @@ async function getFilledProduct(item){
   return retProduct;
 }
 
-function getProductsPromisesAsyncAwait(arrProducts=products) {
+function getProductsPromisesAsyncAwait(arrProducts
+  // eslint-disable-next-line import/no-dynamic-require
+  = require(getPathToMostRecentFile())
+) {
 	return Promise.all(arrProducts.map(item => getFilledProduct(item)));
 };
 
