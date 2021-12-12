@@ -1,9 +1,9 @@
+// const express = require('express');
+
 const routes = require('./routes');
 const { handleStreamRoutes } = require('./routesStream');
 
 const connections = new Map();
-
-// module.exports = (req, res) => {
 
 function requestHandler (req, res) {
   const {
