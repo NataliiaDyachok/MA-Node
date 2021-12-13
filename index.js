@@ -27,16 +27,6 @@ const timeout = msec => new Promise(resolve => {
   setTimeout(resolve, msec);
 });
 
-io.sockets.on('connection', connection => {
-// io.on('connection', connection => {
-  console.log('New connection');
-
-  connection.on('close', () => {
-    console.log('Close');
-    connections.delete(connection);
-  });
-});
-
 // Parse application/json
 app.use(bodyParser.json());
 
@@ -45,6 +35,25 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+
+  const auth = {login: 'Masters', password: 'Academy'} // change this
+
+  // parse login and password from headers
+  const b64auth = (req.headers.authorization || '').split(' ')[0] || ''
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':')
+
+  // Verify login and password are set and correct
+  if (login && password && login === auth.login && password === auth.password) {
+    // Access granted...
+    return next()
+  }
+
+  // Access denied...
+  res.set('WWW-Authenticate', 'Basic realm="401"') // change this
+  res.status(401).send('Authentication required.') // custom message
+})
 
 app.put('/store/csv', handleStreamRoutes);
 
@@ -73,11 +82,21 @@ app.use((err, req, res, next) => {
 });
 
 // eslint-disable-next-line no-unused-expressions
-// http.Server.listen;
-server.listen(PORT || 3000, (res, req) => {
-  console.log(res);
-  console.log(req);
-  console.log(`Server successfully started on port ${PORT}`);
+http.Server.listen;
+server.listen(port=PORT || 3000, (res, req) => {
+  // console.log(res);
+  // console.log(req); connections.set(res.connection, res);
+  console.log(`Server successfully started on port ${port}`);
+});
+
+io.sockets.on('connection', connection => {
+// io.on('connection', connection => {
+  console.log('New connection');
+
+  connection.on('close', () => {
+    console.log('Close');
+    connections.delete(connection);
+  });
 });
 
 const showConnections = () => {
