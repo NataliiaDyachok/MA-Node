@@ -1,5 +1,5 @@
 const express = require('express');
-const controllers = require('./controllers');
+const controllers = require('../controllers/controllers');
 
 const app = express();
 
@@ -36,6 +36,7 @@ app.use((req, res, next) => {
   });
 });
 
+// eslint-disable-next-line consistent-return
 app.use((err, req, res, next) => {
   if (err.status === 404) {
       return res.sendStatus(404);

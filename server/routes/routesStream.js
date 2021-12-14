@@ -1,5 +1,5 @@
-const { notFound } = require('./controllers');
-const { uploadCsv } = require('./controllersStream');
+const { notFound } = require('../controllers/controllers');
+const { uploadCsv } = require('../controllers/controllersStream');
 
 // eslint-disable-next-line consistent-return
 async function handleStreamRoutes(request, response){

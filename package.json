@@ -2,9 +2,9 @@
   "name": "homework-01",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "../server/index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node ../HMW-01/server/index.js"
   },
   "keywords": [],
   "author": "",

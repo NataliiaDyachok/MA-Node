@@ -1,8 +1,8 @@
-/* eslint-disable import/no-dynamic-require */
 const {pipeline} = require('stream');
 const util = require('util');
 const fs = require('fs');
 const path = require('path');
+
 const promisifiedPipeline = util.promisify(pipeline);
 const {scvToJson: createCsvToJson} = require('../helpers');
 

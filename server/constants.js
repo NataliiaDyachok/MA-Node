@@ -1,15 +1,11 @@
 const { readdirSync, lstatSync, existsSync, mkdirSync} = require('fs');
-
-// fs.existsSync("directory") || fs.mkdirSync("directory");
-
 const path = require('path');
-
 const pathToJSONFile = path.resolve(__dirname, 'data.json');
 
 const getFullPath = (sFile = '') => {
   const sPath = path.resolve(__dirname, './upload');
   if (!existsSync(sPath)) mkdirSync(sPath);
-  
+
   return path.resolve(__dirname, './upload', sFile);
 }
 
@@ -26,11 +22,6 @@ const getMostRecentFile = (dir) => {
 };
 
 const lastUploadedJSONFile = getMostRecentFile(getFullPath());
-
-// const pathToJSONFileForExport =
-//   typeof lastUploadedJSONFile === 'undefined'
-//     ? pathToJSONFile
-//     : getFullPath(lastUploadedJSONFile.file);
 
 const getPathToMostRecentFile = () =>
   typeof lastUploadedJSONFile === 'undefined'

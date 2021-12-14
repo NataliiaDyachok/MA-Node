@@ -7,6 +7,7 @@ const { helper1: helpFilterItems,
   helperDiscountPromiseAsyncAwait,
   helperDiscountPromisify,
   // helperRandomizer,
+// eslint-disable-next-line import/no-dynamic-require
 } = require('../helpers');
 
 const constants = require('../constants');
