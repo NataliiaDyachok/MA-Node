@@ -20,10 +20,7 @@ function changeProductsCost(arrProducts
 ) {
   const errorsArray = helpFilterItemsValidate(arrProducts);
   if (errorsArray.length>0){
-    return {
-      code: 400,
-      message: errorsArray,
-    };
+    throw(errorsArray);
   }
 
   const retArrProducts = Array.from(arrProducts, itemProduct => {

@@ -1,5 +1,6 @@
 const { readdirSync, lstatSync, existsSync, mkdirSync} = require('fs');
 const path = require('path');
+
 const pathToJSONFile = path.resolve(__dirname, 'data.json');
 
 const getFullPath = (sFile = '') => {

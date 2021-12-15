@@ -1,53 +1,26 @@
-const express = require('express');
+const Router = require('express');
 const controllers = require('../controllers/controllers');
 
-const app = express();
+const router = new Router();
 
-app.route('/filter')
-  .get((req, res) => controllers.filter(req, res))
-  .post((req, res) => controllers.filterPost(req, res));
+router.post('/filter', controllers.filterPost);
+router.get('/filter', controllers.filter);
 
-app.route('/topprice')
-  .get((req, res) => controllers.topprice(req, res))
-  .post((req, res) => controllers.toppricePost(req, res));
+router.get('/topprice', controllers.topprice);
+router.post('/topprice', controllers.toppricePost);
 
-app.route('/commonprice')
-  .get((req, res) => controllers.commonprice(req, res))
-  .post((req, res) => controllers.commonpricePost(req, res));
+router.get('/commonprice', controllers.commonprice);
+router.post('/commonprice', controllers.commonpricePost);
 
-app.route('/discount/promise')
-  .get((req, res) => controllers.discountPromise(req, res))
-  .post((req, res) => controllers.discountPromisePost(req, res));
+router.get('/discount/promise', controllers.discountPromise);
+router.post('/discount/promise', controllers.discountPromisePost);
 
-app.route('/discount/async')
-  .get((req, res) => controllers.discountPromiseAsyncAwait(req, res))
-  .post((req, res) => controllers.discountPromiseAsyncAwaitPost(req, res));
+router.get('/discount/async', controllers.discountPromiseAsyncAwait);
+router.post('/discount/async', controllers.discountPromiseAsyncAwaitPost);
 
-app.route('/discount/promisify')
-  .get((req, res) => controllers.discountPromisify(req, res))
-  .post((req, res) => controllers.discountPromisifyPost(req, res));
+router.get('/discount/promisify', controllers.discountPromisify);
+router.post('/discount/promisify', controllers.discountPromisifyPost);
 
-app.post('/data', (req, res) => controllers.dataPost(req, res));
+router.post('/data', controllers.dataPost);
 
-app.use((req, res, next) => {
-  next({
-      status: 404,
-      message: 'Not Found',
-  });
-});
-
-// eslint-disable-next-line consistent-return
-app.use((err, req, res, next) => {
-  if (err.status === 404) {
-      return res.sendStatus(404);
-  }
-
-  if (err.status === 500) {
-      return res.sendStatus(500);
-  }
-
-  if (err.status) res.sendStatus(err.status);
-  next();
-});
-
-module.exports =  app;
+module.exports =  router;

@@ -1,5 +1,9 @@
+const Router = require('express');
+
 const { notFound } = require('../controllers/controllers');
 const { uploadCsv } = require('../controllers/controllersStream');
+
+const router = new Router();
 
 // eslint-disable-next-line consistent-return
 async function handleStreamRoutes(request, response){
@@ -27,4 +31,7 @@ async function handleStreamRoutes(request, response){
   notFound(request, response);
 }
 
-module.exports = {handleStreamRoutes};
+router.get('/store/csv', handleStreamRoutes);
+
+// module.exports = {handleStreamRoutes};
+module.exports = router;

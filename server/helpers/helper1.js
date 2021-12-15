@@ -41,20 +41,17 @@ function filterByParams(params,
 ) {
   const errorsArray = validate(arrProducts);
   if (errorsArray.length>0){
-    return {
-      code: 400,
-      message: errorsArray,
-    };
+    throw(errorsArray);
   }
-  let arrProducts2 = [];
 
+  let arrProducts2 = [];
   // eslint-disable-next-line no-restricted-syntax
-  for (const key of params.keys()) {
-    arrProducts2 = filterItems(arrProducts, key, params.get(key));
+  for (const key of Object.keys(params)) {
+    arrProducts2 = filterItems(arrProducts, key, params[key]);
   }
 
   return {
-    code: arrProducts.length > 0? 200: 204,
+    code: arrProducts2.length > 0? 200: 204,
     message: arrProducts2,
   };
 }
