@@ -23,4 +23,6 @@ router.post('/discount/promisify', controllers.discountPromisifyPost);
 
 router.post('/data', controllers.dataPost);
 
+router.use(controllers.notFound);
+
 module.exports =  router;

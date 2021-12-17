@@ -3,6 +3,7 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const ApiError = require('../error/ApiError');
+
 const promisifiedPipeline = util.promisify(pipeline);
 const {scvToJson: createCsvToJson} = require('../helpers');
 
@@ -17,7 +18,8 @@ async function uploadCsv(inputStream){
     await promisifiedPipeline(inputStream, scvToJson, outputStream);
   } catch (err) {
     // console.error('CSV pipeline failed', err);
-    throw('CSV pipeline failed '+err.message);
+    // eslint-disable-next-line no-throw-literal
+    throw(`CSV pipeline failed ${err.message}`);
   }
 }
 
@@ -39,7 +41,7 @@ async function handleStreamRoutes(request, response, next){
   // response.end(JSON.stringify({status: 'ok'}));
     // eslint-disable-next-line consistent-return
     // return;
-  
+
   // notFound(request, response);
 }
 
