@@ -1,15 +1,11 @@
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
+const path = require('path');
 const bodyParser = require('body-parser');
 const basicAuth = require('express-basic-auth');
 require('dotenv').config();
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
-
 const router = require('./routes/index');
-// const routes = require('./routes/routes');
-// const { handleStreamRoutes } = require('./routes/routesStream');
-
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
@@ -29,13 +25,7 @@ app.use(basicAuth({
 }));
 
 app.use('/', router);
-
-// app.put('/store/csv', handleStreamRoutes);
-// app.use('/', routes);
-
 app.use(errorHandler);
-
-// next(ApiError.badRequest(e.message))
 
 const start = () => {
   try {
