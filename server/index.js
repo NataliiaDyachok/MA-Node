@@ -2,12 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const authHandler = require('./middleware/authMiddleware');
 const router = require('./routes/index');
+const { port } = require('../config');
 
-const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 
@@ -22,8 +21,8 @@ app.use(errorHandler);
 
 const start = () => {
   try {
-      app.listen(PORT, () =>
-        console.log(`Server successfully started on port ${PORT}`));
+      app.listen(port, () =>
+        console.log(`Server successfully started on port ${port}`));
   } catch (e) {
       console.log(e);
   }
