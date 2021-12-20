@@ -1,10 +1,18 @@
-const basicAuth = require('express-basic-auth');
+const ApiError = require('../error/ApiError');
 
-const getUnauthorizedResponse = (req) => req.auth
-  ? (`Credentials ${  req.auth.user  }:${  req.auth.password  } rejected`)
-  : 'No credentials provided';
+module.exports = ((req, res, next) => {
 
-module.exports = basicAuth({
-  users: { 'Masters': 'Academy' },
-  unauthorizedResponse: getUnauthorizedResponse
-});
+  const auth = {login: 'Masters', password: 'Academy'} // change this
+
+  // parse login and password from headers
+  const b64auth = (req.headers.authorization || '').split(' ')[0] || ''
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':')
+
+  // Verify login and password are set and correct
+  if (login && password && login === auth.login && password === auth.password) {
+    // Access granted...
+    return next()
+  }
+
+  next(ApiError.authenticationRequired('Authentication required.'));
+})
