@@ -1,4 +1,3 @@
-// const constants = require('../constants');
 /* eslint-disable global-require */
 const {getPathToMostRecentFile} = require('../constants');
 
@@ -15,23 +14,25 @@ function getCost(product) {
     : product.quantity * getPriceWithoutSign(product.pricePerItem);
 }
 
-function getMaxProductsCost(arrProducts
+function changeProductsCost(arrProducts
   // eslint-disable-next-line import/no-dynamic-require
   = require(getPathToMostRecentFile())
 ) {
   const errorsArray = helpFilterItemsValidate(arrProducts);
   if (errorsArray.length>0){
-    return {
-      code: 400,
-      message: errorsArray,
-    };
+    throw(errorsArray);
   }
 
-  const maxCostItem = arrProducts.sort((a, b) => getCost(b) - getCost(a))[0];
+  const retArrProducts = Array.from(arrProducts, itemProduct => {
+    const cloneItem = { ...itemProduct };
+    cloneItem.price = getCost(cloneItem);
+    return cloneItem;
+  });
   return {
     code: 200,
-    message: maxCostItem,
+    message: retArrProducts,
   };
 }
 
-module.exports = getMaxProductsCost;
+module.exports = changeProductsCost;
+
