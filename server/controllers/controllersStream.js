@@ -24,7 +24,6 @@ async function uploadCsv(inputStream){
 }
 
 async function handleStreamRoutes(request, response, next){
-  // const {url, method} = request;
 
   try {
     await uploadCsv(request);
@@ -32,17 +31,8 @@ async function handleStreamRoutes(request, response, next){
     response.statusCode = 200;
     response.end(JSON.stringify({status: 'ok'}));
   } catch (err) {
-    // throw('Failed to upload CSV');
     next(ApiError.badRequest('Failed to upload CSV'));
   }
-
-  // response.setHeader('Content-Type', 'text');
-  // response.statusCode = 200;
-  // response.end(JSON.stringify({status: 'ok'}));
-    // eslint-disable-next-line consistent-return
-    // return;
-
-  // notFound(request, response);
 }
 
 module.exports = handleStreamRoutes;

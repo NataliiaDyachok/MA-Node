@@ -5,9 +5,10 @@ const bodyParser = require('body-parser');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const authHandler = require('./middleware/authMiddleware');
 const router = require('./routes/index');
-const { port, db: dbConfig } = require('./config');
+// const { port, db: dbConfig } = require('./config');
+const { port } = require('./config');
 
-const db = require('./db')(dbConfig);
+// const db = require('./db')(dbConfig);
 
 const app = express();
 app.use(cors());
@@ -24,9 +25,9 @@ app.use(errorHandler);
 const start = async () => {
   try {
 
-    const p = await db.
-      createProduct({item:'apple', type:'Fuji', weight:10, pricePerKilo: 3});
-    console.log(`p ${JSON.stringify(p)}`);
+    // const p = await db.
+    //   createProduct({item:'apple', type:'Fuji', unit: 'kilo', price: 10, quantity: 3});
+    // console.log(`p ${JSON.stringify(p)}`);
 
     app.listen(port, () =>
         console.log(`Server successfully started on port ${port}`));
