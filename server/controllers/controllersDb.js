@@ -8,13 +8,15 @@ const db = require('../db')(dbConfig);
 const getModifiedProductsArray = (arrProducts) =>
   Array.from(arrProducts, product => {
     const hasWeight = product.weight && product.pricePerKilo;
-    const price = hasWeight? product.pricePerKilo: product.pricePerItem;
+    let price = hasWeight? product.pricePerKilo: product.pricePerItem;
+    price = price.replace(',','.');
+    price = price.replace('$','');
 
     const cloneItem = {};
     cloneItem.item = product.item;
     cloneItem.type = product.type;
     cloneItem.unit = hasWeight? 'kilo': 'quantity';
-    cloneItem.price = Number(price.replace('$',''));
+    cloneItem.price = Number(price);
     cloneItem.quantity = Number(hasWeight? product.weight: product.quantity);
 
     return cloneItem;
