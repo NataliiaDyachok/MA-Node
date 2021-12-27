@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  db:
+    image: "postgres:13.1-alpine"
+    container_name: db
+    restart: unless-stopped
+    
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "15432:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data/
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on: 
+      - db
+    ports:
+      - 18080:8080

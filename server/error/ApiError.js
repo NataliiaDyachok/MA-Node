@@ -20,6 +20,11 @@ class ApiError extends Error{
     static authenticationRequired(message) {
         return new ApiError(401, message);
     }
+
+    static fatal(message) {
+      console.error(message);
+      process.exit(1);
+    }
 }
 
 module.exports = ApiError;
