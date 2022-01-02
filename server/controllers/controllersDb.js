@@ -1,9 +1,10 @@
 const ApiError = require('../error/ApiError');
 const { helper1: helpFilterItems } = require('../helpers');
 
-const { db: dbConfig } = require('../config');
+// const { db: dbConfig } = require('../config');
+// const db = require('../db')(dbConfig);
 
-const db = require('../db')(dbConfig);
+const db = require('../db');
 
 const getModifiedProductsArray = (arrProducts) =>
   Array.from(arrProducts, product => {
@@ -16,7 +17,7 @@ const getModifiedProductsArray = (arrProducts) =>
     cloneItem.item = product.item;
     cloneItem.type = product.type;
     cloneItem.unit = hasWeight? 'kilo': 'quantity';
-    cloneItem.price = Number(price);
+    cloneItem.price = Number(price.replace('$',''));
     cloneItem.quantity = Number(hasWeight? product.weight: product.quantity);
 
     return cloneItem;
