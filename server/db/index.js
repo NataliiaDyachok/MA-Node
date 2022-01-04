@@ -57,6 +57,7 @@ const getType = () => type;
 const dbWrapper = (t) => db[t] || db[type];
 
 module.exports = {
+  // db,
   init,
   end,
   setType,

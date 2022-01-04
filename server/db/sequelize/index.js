@@ -55,7 +55,7 @@ module.exports = (config) => {
 
         const timeStamp = Date.now();
 
-        delete(p.id);
+        // delete(p.id);
         p.price = p.price || 0;
         p.quantity = p.quantity || 1;
         p.createdAt = timeStamp;
@@ -128,10 +128,10 @@ module.exports = (config) => {
           await db.Product.update({ deletedAt: Date.now() }, { where: {id} });
 
         console.log(
-          `INFO: product by id ${JSON.stringify(res.rows[0])}`
+          `INFO: product by id ${JSON.stringify(id)} was deleted`
         );
 
-        return res.rows[0];
+        return res[0];
 
       } catch (err){
         console.error(err.message || err);
