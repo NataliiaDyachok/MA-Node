@@ -7,6 +7,7 @@ const helperDiscountPromiseAsyncAwait =
   require('./helperDiscountPromiseAsyncAwait');
 const helperRandomizer = require('./helperRandomizer');
 const scvToJson = require('./scv-to-json');
+const scvToDB = require('./scv-to-DB');
 // const helperStream = require('./helperStream') ;
 
 module.exports = {helper1,
@@ -17,4 +18,6 @@ module.exports = {helper1,
   helperDiscountPromiseAsyncAwait,
   helperRandomizer,
   // helperStream,
-  scvToJson};
+  scvToJson,
+  scvToDB,
+};

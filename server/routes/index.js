@@ -5,9 +5,9 @@ const router = new Router();
 
 const handleRouter = require('./routesDb');
 
-const handleStreamRouter = require('./routesStream');
+// const handleStreamRouter = require('./routesStream');
 
-router.use('/store', handleStreamRouter);
+// router.use('/store', handleStreamRouter);
 router.use('/', handleRouter);
 
 module.exports = router;
