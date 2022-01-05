@@ -1,5 +1,6 @@
 const { Transform } = require('stream');
 const {validate: helpFilterItemsValidate} = require('./helper1');
+const writeArrayInDB = require('./helperDB');
 
 function getArrayUnique(arrScr){
   const arrayUnique =  arrScr.reduce((retArr, productItem) => {
@@ -42,7 +43,7 @@ function formatAndCheckRow(sRow){
     .map(element => element.replace('\"', ''));
 }
 
-function createCsvToJson(){
+function createCsvToDB(){
   let isFirst = true;
   let sFirstRow = '';
   let sLastRow = '';
@@ -147,6 +148,16 @@ function createCsvToJson(){
     console.log('No more data is read.');
 
     // const content = JSON.stringify(globalArrayUnique, null, 2);
+    try{  
+      writeArrayInDB(globalArrayUnique)
+    } catch { err => {
+        callback(err.message, null);
+        return;
+      }
+    }
+
+    console.log('Writing to the database is over');
+
     const content = globalArrayUnique;
     callback(null, content);
   };
@@ -157,4 +168,4 @@ function createCsvToJson(){
 
 }
 
-module.exports = createCsvToJson;
+module.exports = createCsvToDB;
