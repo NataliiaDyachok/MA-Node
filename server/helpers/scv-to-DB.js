@@ -148,18 +148,18 @@ function createCsvToDB(){
     console.log('No more data is read.');
 
     // const content = JSON.stringify(globalArrayUnique, null, 2);
-    try{  
+    try{
       writeArrayInDB(globalArrayUnique)
-    } catch { err => {
-        callback(err.message, null);
-        return;
-      }
+      .then(()=> console.log('Writing to the database is over'));
+    } catch {
+        // eslint-disable-next-line no-unused-expressions
+        err => {callback(err.message, null);};
     }
 
-    console.log('Writing to the database is over');
+    // console.log('Writing to the database is over');
 
-    const content = globalArrayUnique;
-    callback(null, content);
+    // const content = globalArrayUnique;
+    callback(null, "content");
   };
   // eslint-disable-next-line no-underscore-dangle
   Transform.prototype._flush = flush;

@@ -1,21 +1,22 @@
 const {pipeline} = require('stream');
 const util = require('util');
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 const ApiError = require('../error/ApiError');
 
 const promisifiedPipeline = util.promisify(pipeline);
 const {scvToDB: createCsvToDB} = require('../helpers');
 
 async function uploadCsv(inputStream){
-  const timestamp = Date.now();
-  const filePath = path.resolve(__dirname, `../upload/${timestamp}.json`);
+  // const timestamp = Date.now();
+  // const filePath = path.resolve(__dirname, `../upload/${timestamp}.json`);
 
-  const outputStream = fs.createWriteStream(filePath);
+  // const outputStream = fs.createWriteStream(filePath);
   const scvToDB = createCsvToDB();
 
   try{
-    await promisifiedPipeline(inputStream, scvToDB, outputStream);
+    // await promisifiedPipeline(inputStream, scvToDB, outputStream);
+    await promisifiedPipeline(inputStream, scvToDB);
   } catch (err) {
     // console.error('CSV pipeline failed', err);
     // eslint-disable-next-line no-throw-literal

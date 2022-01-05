@@ -1,4 +1,6 @@
+// const { Op } = require('sequelize');
 const db = require('../db');
+
 
 const getModifiedProductsArray = (arrProducts) =>
   Array.from(arrProducts, product => {
@@ -17,16 +19,13 @@ const getModifiedProductsArray = (arrProducts) =>
     return cloneItem;
   });
 
-async function writeArrayInDB(productArray){
-    productArray = getModifiedProductsArray(productArray);
-    
-    productArray.forEach((productItem) => {
-        db.dbWrapper().createProduct(productItem)
-         .then(p => console.log(`p ${JSON.stringify(p)}`))
-         .catch(err => {console.error(`ERROR: ${(err.message || err) +'\n'+ JSON.stringify(productItem)}`)
-            return err;
-        });
-    });
+function writeArrayInDB(productArray){
+  const arr = getModifiedProductsArray(productArray);
+
+  return Promise.all(arr.forEach((productItem) =>  {
+    db.dbWrapper().updateOrCreateProduct(productItem);
+  }));
 }
 
 module.exports = writeArrayInDB;
+

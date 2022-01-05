@@ -119,6 +119,57 @@ module.exports = (config) => {
       };
     },
 
+    updateOrCreateProduct: async (product) => {
+      try{
+
+        if (!Object.keys(product).length){
+          throw new Error('ERROR: Nothing to update' );
+        }
+
+        const retProduct = await db.Product.findOne({
+        // await db.Product.findOne({
+          where: {
+            [Sequelize.Op.and]:
+              [
+                { item: product.item },
+                { type: product.type },
+                { unit: product.unit },
+                { price: product.price },
+                { quantity: product.quantity },
+              ],
+              deletedAt: { [Sequelize.Op.is]: null }
+          }
+        });
+        // .then( async (retProduct) => {
+
+        if (retProduct === null){
+          await db.Product.create(product)
+          .then(() =>
+            console.log(
+              `INFO: The product was created ${JSON.stringify(product)}`
+            )
+          );
+        } else {
+          // eslint-disable-next-line no-param-reassign
+          retProduct.price += product.price;
+          // eslint-disable-next-line no-param-reassign
+          retProduct.quantity += product.quantity;
+
+          await retProduct.save()
+            .then(() =>
+              console.log(
+                `INFO: The product was updated ${JSON.stringify(retProduct)}`
+              )
+            );
+        }
+
+
+      } catch (err){
+        console.error(err.message || err);
+        throw err;
+      };
+    },
+
     deleteProduct: async (id) => {
       try{
         if (!id){ throw new Error('ERROR: no product id defined' ); };
