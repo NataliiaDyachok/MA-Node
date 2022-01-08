@@ -144,22 +144,27 @@ function createCsvToDB(){
   Transform.prototype._transform = transform;
 
   // eslint-disable-next-line no-unused-vars
-  const flush = callback => {
+  const flush = async callback => {
     console.log('No more data is read.');
 
     // const content = JSON.stringify(globalArrayUnique, null, 2);
-    try{
-      writeArrayInDB(globalArrayUnique)
-      .then(()=> console.log('Writing to the database is over'));
-    } catch {
+   // try{
+      await writeArrayInDB(globalArrayUnique)
+      .then(() => {
+        console.log('Writing to the database is over');
+        callback(null, globalArrayUnique);
+      })
+      .catch(err => callback(err.message, null));
+
+  //  } catch {
         // eslint-disable-next-line no-unused-expressions
-        err => {callback(err.message, null);};
-    }
+    //     err => {callback(err.message, null);};
+    // }
 
     // console.log('Writing to the database is over');
 
     // const content = globalArrayUnique;
-    callback(null, "content");
+    // callback(null, globalArrayUnique);
   };
   // eslint-disable-next-line no-underscore-dangle
   Transform.prototype._flush = flush;

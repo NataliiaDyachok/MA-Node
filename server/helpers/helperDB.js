@@ -19,13 +19,33 @@ const getModifiedProductsArray = (arrProducts) =>
     return cloneItem;
   });
 
+// function writeArrayInDB(productArray, callback){
 function writeArrayInDB(productArray){
   const arr = getModifiedProductsArray(productArray);
 
-  return Promise.all(arr.forEach((productItem) =>  {
-    db.dbWrapper().updateOrCreateProduct(productItem);
-  }));
-}
+  // return Promise.all(arr.forEach((productItem) =>  {
+  // arr.map(async (productItem, callback) =>  {
+  //   await db.dbWrapper().updateOrCreateProduct(productItem, callback);
+  // });
+
+  arr.map(async (productItem) =>  {
+    await db.dbWrapper().updateOrCreateProduct(
+      productItem,
+      (err, res) => {
+          console.log(`!!! Product err done ${err}`);
+          console.log(`!!! Product res done ${res}`);
+      });
+    return true;
+  });
+
+  // arr.map(async (productItem) =>  {
+  //   await db.dbWrapper().updateOrCreateProduct(productItem);
+  // });
+
+  // arr.map(db.dbWrapper().updateOrCreateProduct);
+
+
+};
 
 module.exports = writeArrayInDB;
 
