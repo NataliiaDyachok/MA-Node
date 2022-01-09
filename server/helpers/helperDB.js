@@ -1,6 +1,4 @@
-// const { Op } = require('sequelize');
 const db = require('../db');
-
 
 const getModifiedProductsArray = (arrProducts) =>
   Array.from(arrProducts, product => {
@@ -19,32 +17,19 @@ const getModifiedProductsArray = (arrProducts) =>
     return cloneItem;
   });
 
-// function writeArrayInDB(productArray, callback){
-function writeArrayInDB(productArray){
-  const arr = getModifiedProductsArray(productArray);
+  async function writeArrayInDB(productArray){
+    const arr = getModifiedProductsArray(productArray);
 
-  // return Promise.all(arr.forEach((productItem) =>  {
-  // arr.map(async (productItem, callback) =>  {
-  //   await db.dbWrapper().updateOrCreateProduct(productItem, callback);
-  // });
-
-  arr.map(async (productItem) =>  {
-    await db.dbWrapper().updateOrCreateProduct(
-      productItem,
-      (err, res) => {
-          console.log(`!!! Product err done ${err}`);
-          console.log(`!!! Product res done ${res}`);
-      });
-    return true;
-  });
-
-  // arr.map(async (productItem) =>  {
-  //   await db.dbWrapper().updateOrCreateProduct(productItem);
-  // });
-
-  // arr.map(db.dbWrapper().updateOrCreateProduct);
-
-
+    // eslint-disable-next-line no-restricted-syntax
+    for (const productItem of arr) {
+      // eslint-disable-next-line no-await-in-loop
+      await db.dbWrapper().updateOrCreateProduct(
+        productItem,
+        (err, res) => {
+            console.log(`!!! Product err done ${err}`);
+            console.log(`!!! Product res done ${res}`);
+        });
+    }
 };
 
 module.exports = writeArrayInDB;

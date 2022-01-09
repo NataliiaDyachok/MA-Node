@@ -1,6 +1,9 @@
 const { Transform } = require('stream');
 const {validate: helpFilterItemsValidate} = require('./helper1');
-const writeArrayInDB = require('./helperDB');
+// const writeArrayInDB = require('./helperDB');
+let globalArrayUnique = [];
+
+const getGlobalArrayUnique = () => globalArrayUnique;
 
 function getArrayUnique(arrScr){
   const arrayUnique =  arrScr.reduce((retArr, productItem) => {
@@ -48,7 +51,7 @@ function createCsvToDB(){
   let sFirstRow = '';
   let sLastRow = '';
   let sAdditionalLine = '';
-  let globalArrayUnique = [];
+  // let globalArrayUnique = [];
 
   let arrFirstRow = [];
   let arrLastRow = [];
@@ -137,7 +140,7 @@ function createCsvToDB(){
     globalArrayUnique = getArrayUnique(globalArrayUnique);
 
     // const content = JSON.stringify(arrayUnique, null, 2);
-    callback(null, '');
+    callback(null, JSON.stringify(globalArrayUnique));
   };
 
   // eslint-disable-next-line no-underscore-dangle
@@ -149,12 +152,12 @@ function createCsvToDB(){
 
     // const content = JSON.stringify(globalArrayUnique, null, 2);
    // try{
-      await writeArrayInDB(globalArrayUnique)
-      .then(() => {
-        console.log('Writing to the database is over');
-        callback(null, globalArrayUnique);
-      })
-      .catch(err => callback(err.message, null));
+      // await writeArrayInDB(globalArrayUnique)
+      // .then(() => {
+      //   console.log('Writing to the database is over');
+      //   callback(null, globalArrayUnique);
+      // })
+      // .catch(err => callback(err.message, null));
 
   //  } catch {
         // eslint-disable-next-line no-unused-expressions
@@ -164,8 +167,12 @@ function createCsvToDB(){
     // console.log('Writing to the database is over');
 
     // const content = globalArrayUnique;
-    // callback(null, globalArrayUnique);
+    callback(null, JSON.stringify(globalArrayUnique));
+
+    return JSON.stringify(globalArrayUnique);
+
   };
+
   // eslint-disable-next-line no-underscore-dangle
   Transform.prototype._flush = flush;
 
@@ -173,4 +180,7 @@ function createCsvToDB(){
 
 }
 
-module.exports = createCsvToDB;
+module.exports = {
+  createCsvToDB,
+  getGlobalArrayUnique,
+};

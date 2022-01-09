@@ -1,7 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 const { readdirSync } = require('fs');
 const path = require('path');
-// const { stringify } = require('querystring');
 const Sequelize = require('sequelize');
 
 const modelsDir = path.join(__dirname, './models');
@@ -43,6 +42,8 @@ module.exports = (config) => {
     },
 
     createProduct: async (product) => {
+      let p = null;
+
       try{
         if (!product.item)
           { throw new Error('ERROR: no product item defined' ); };
@@ -51,7 +52,7 @@ module.exports = (config) => {
         if (!product.unit)
           { throw new Error('ERROR: no product unit defined' ); };
 
-        const p = JSON.parse(JSON.stringify(product));
+        p = JSON.parse(JSON.stringify(product));
 
         const timeStamp = Date.now();
 
@@ -71,6 +72,8 @@ module.exports = (config) => {
         console.error(err.message || err);
         throw err;
       };
+
+      return p;
     },
 
     getProduct: async (id) => {
@@ -88,6 +91,20 @@ module.exports = (config) => {
           `INFO: product by id ${JSON.stringify(res)}`
         );
 
+        return res;
+
+      } catch (err){
+        console.error(err.message || err);
+        throw err;
+      };
+    },
+
+    getAllProducts: async (objWhere) => {
+      if (!objWhere){ throw new Error('ERROR: no product filter defined' ); };
+      try{
+        const res = await db.Product.findAll({
+          where: objWhere
+        });
         return res;
 
       } catch (err){
@@ -124,39 +141,40 @@ module.exports = (config) => {
       if (!Object.keys(product).length){
         const err = new Error('ERROR: Nothing to update' );
         done(err, false);
+        return false;
       }
 
-      await db.Product.findOne({
+      const retProduct = await db.Product.findOne({
         where: {
           [Sequelize.Op.and]:
             [
               { item: product.item },
               { type: product.type },
               { unit: product.unit },
-              { price: product.price },
-              { quantity: product.quantity },
+              // { price: product.price }, { quantity: product.quantity },
             ],
             deletedAt: { [Sequelize.Op.is]: null }
         }
       })
-      .then ( async (retProduct) => {
-        if (retProduct === null){
-          await db.Product.create(product)
-            .then ((res) => done(null, JSON.stringify(res)))
-            .catch((err) => done(err, 'db.Product.create'));
-        };
+      .catch((err) => console.log(`!!! ERROR Product.findOne !!!  ${err}`));
 
-        // eslint-disable-next-line no-param-reassign
-        retProduct.price = Number(retProduct.price) + Number(product.price);
-        // eslint-disable-next-line no-param-reassign
-        retProduct.quantity =
-          Number(retProduct.quantity) + Number(product.quantity);
+      if (retProduct === null){
+        await db.Product.create(product)
+          .then ((res) => done(null, JSON.stringify(res)))
+          .catch((err) => done(err, '!!! ERROR Product.create'));
+        return true;
+      };
 
-        await retProduct.save()
-          .then(() => done(null, JSON.stringify(retProduct)))
-          .catch((err) => done(err, 'retProduct.save'));
-      })
-      .catch((err) => done(err, 'db.Product.findOne'));
+      retProduct.set('price',
+        Number(retProduct.get('price')) + Number(product.price));
+      retProduct.set('quantity',
+        Number(retProduct.get('quantity')) + Number(product.quantity));
+
+      await retProduct.save()
+        .then(() => done(null, JSON.stringify(retProduct)))
+        .catch((err) => done(err, '!!! ERROR Product.save'));
+
+      return true;
 
     },
 

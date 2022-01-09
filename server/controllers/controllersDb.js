@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const ApiError = require('../error/ApiError');
 const { helper1: helpFilterItems } = require('../helpers');
 
@@ -84,6 +85,22 @@ const productGet = (req, res, next) => {
   return true;
 };
 
+const productGetAll = (req, res, next) => {
+  try {
+
+    db.dbWrapper().getAllProducts({ deletedAt: { [Sequelize.Op.is]: null } })
+      .then(p => {
+        console.log(`p ${JSON.stringify(p)}`);
+        return res.json(p);
+      });
+
+  } catch (error) {
+    return next(ApiError.badRequest(error));
+  }
+
+  return true;
+};
+
 const productDelete = (req, res, next) => {
   try {
 
@@ -105,4 +122,5 @@ module.exports = {
   productUpdate,
   productGet,
   productDelete,
+  productGetAll,
 };

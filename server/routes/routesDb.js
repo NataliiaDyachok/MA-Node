@@ -7,6 +7,7 @@ const router = new Router();
 router.post('/product', controllersDb.productPost); // add
 router.put('/product', controllersDb.productUpdate); // update
 router.get('/product', controllersDb.productGet);
+router.get('/product-all', controllersDb.productGetAll);
 router.delete('/product', controllersDb.productDelete);
 // router.put('/csv', handleStreamRoutes);
 
