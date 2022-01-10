@@ -1,123 +1,75 @@
-// const { config } = require('dotenv');
-const { Pool } = require('pg');
+/* eslint-disable import/no-dynamic-require */
+const {
+  db: { config, defaultType }
+} = require('../config');
 
-module.exports = (config) => {
-  const client = new Pool(config);
+const { fatal } = require('../error/ApiError');
 
-  return {
-    testConnection: async () => {
-      try{
-        console.log('hello from pg testConnection');
-        await client.query('SELECT NOW()');
-      } catch (err) {console.error(err.stack);
-        throw err;
-      };
-    },
+const db = {};
+let type = defaultType;
 
-    close: async () => {
-      console.log('INFO closing pg');
-      client.end();
-    },
+const funcWrapper = (func) =>
+  typeof func === 'function' ?
+    func :
+    fatal(`FATAL: cannot find ${func.name} function for this DB wrapper`);
 
-    createProduct: async ({item, type, unit, price = 0, quantity = 1}) => {
-      try{
-        if (!item){ throw new Error('ERROR: no product item defined' ); };
-        if (!type){ throw new Error('ERROR: no product type defined' ); };
-        if (!unit){ throw new Error('ERROR: no product unit defined' ); };
+const init = async () => {
+  try {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [ k, v ] of Object.entries(config)){
+      // eslint-disable-next-line import/no-dynamic-require
+      // eslint-disable-next-line global-require
+      const wrapper = require(`./${k}`)(v);
+      // eslint-disable-next-line no-await-in-loop
+      await wrapper.testConnection();
+      console.log(`INFO: DB wrapper for ${k} initiated`);
+      db[k] = wrapper;
+    }
 
-        const timeStamp = new Date();
+  } catch (error) {
+    fatal(`FATAL: ${error.message || error}`);
+  }
+};
 
-        const res = await client.query(
-          'INSERT INTO products'
-            + '(item, type, unit, price, quantity, created_at, updated_at)'
-            + ' VALUES ($1, $2, $3, $4, $5, $6, $7)'
-          , [item, type, unit, price, quantity, timeStamp, timeStamp]
-        );
+const end = async () => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [ k, v ] of Object.entries(db)){
+    // eslint-disable-next-line no-await-in-loop
+    await v.close();
+    console.log(`INFO: DB wrapper for ${k} closed`);
+  }
+};
 
-        console.log(
-          `INFO: new product created ${JSON.stringify(res)}`
-        );
+const setType = (t) => {
+  if (!t || !db[t]){
+    console.log('WARNINNG: Cannot find provided DB type');
+    return false;
+  }
 
-      } catch (err){
-        console.error(err.message || err);
-        throw err;
-      };
-    },
+  // eslint-disable-next-line no-const-assign
+  type = t;
+  console.log(`INFO: The DB type has been changed to ${t}`);
+  return true;
+};
 
-    getProduct: async (id) => {
-      try{
-        if (!id){ throw new Error('ERROR: no product id defined' ); };
+const getType = () => type;
 
-        const res = await client.query(
-          'SELECT * FROM products WHERE id = $1 AND deleted_at IS NULL', [id]);
+const dbWrapper = (t) => db[t] || db[type];
 
-        console.log(
-          `INFO: product by id ${JSON.stringify(res.rows[0])}`
-        );
+module.exports = {
+  // db,
+  init,
+  end,
+  setType,
+  getType,
+  dbWrapper,
 
-        return res.rows[0];
-
-      } catch (err){
-        console.error(err.message || err);
-        throw err;
-      };
-    },
-
-    // updateProduct: async ({id, ...product}) => {
-    updateProduct: async (id, product) => {
-      try{
-        if (!id){ throw new Error('ERROR: no product id defined' ); };
-
-        const query = [];
-        const values = [];
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const [index, [key, val]] of Object.entries(product).entries()){
-          query.push(`${key} = $${index + 1}`);
-          values.push(val);
-        };
-
-        if (!values.length){
-          throw new Error('ERROR: nothing to update' );
-        }
-
-        values.push(id);
-
-        const res = await client.query(
-          `UPDATE products SET ${query.join(',')}`
-          +` WHERE id =  $${values.length}`
-          +' RETURNING *', values);
-
-        console.log(
-          `DEBUG: product updates ${JSON.stringify(res.rows[0])}`
-        );
-
-      } catch (err){
-        console.error(err.message || err);
-        throw err;
-      };
-    },
-
-    deleteProduct: async (id) => {
-      try{
-        if (!id){ throw new Error('ERROR: no product id defined' ); };
-
-        const res = await client.query(
-          'UPDATE products SET deleted_at = $1 WHERE id = $2',
-          [new Date(), id]
-        );
-
-        console.log(
-          `INFO: product by id ${JSON.stringify(res.rows[0])}`
-        );
-
-        return res.rows[0];
-
-      } catch (err){
-        console.error(err.message || err);
-        throw err;
-      };
-    },
-
-  };
+  testConnection: async () => funcWrapper(dbWrapper.testConnection)(),
+  close: async () => funcWrapper(dbWrapper.close)(),
+  createProduct:
+    async (product) => funcWrapper(dbWrapper.createProduct)(product),
+  getProduct: async (id) => funcWrapper(dbWrapper.getProduct)(id),
+  updateProduct:
+    async (product) => funcWrapper(dbWrapper.updateProduct)(product),
+  deleteProduct: async (id) => funcWrapper(dbWrapper.deleteProduct)(id),
 };

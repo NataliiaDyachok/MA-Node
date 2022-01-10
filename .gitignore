@@ -1,3 +1,4 @@
 node_modules
 server/upload
 .env
+db/data/

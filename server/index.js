@@ -10,6 +10,8 @@ const { port } = require('./config');
 
 // const db = require('./db')(dbConfig);
 
+const db = require('./db');
+
 const app = express();
 app.use(cors());
 
@@ -24,9 +26,14 @@ app.use(errorHandler);
 
 const start = async () => {
   try {
+    await db.init();
+    db.setType('sequelize');
+    console.log(`Now db is ${db.getType()}`);
+
 
     // const p = await db.
-    //   createProduct({item:'apple', type:'Fuji', unit: 'kilo', price: 10, quantity: 3});
+    //   createProduct(
+      // {item:'apple', type:'Fuji', unit: 'kilo', price: 10, quantity: 3});
     // console.log(`p ${JSON.stringify(p)}`);
 
     app.listen(port, () =>
