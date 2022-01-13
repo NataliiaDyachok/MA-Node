@@ -102,7 +102,7 @@ module.exports = (config) => {
     getAllProducts: async (objWhere) => {
       if (!objWhere){ throw new Error('ERROR: no product filter defined' ); };
       try{
-        const res = await db.Product.findAll({
+        const res = await db.product.findAll({
           where: objWhere
         });
         return res;

@@ -4,11 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     'user',
     {
       id: {
-        type: DataTypes.UUID,
-        defaultValue: sequelize.UUIDV4,
-        primaryKey: true,
-        allowNull: false,
-        field: 'id',
+        type: DataTypes.UUID
+        , defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()')
+        , primaryKey: true
+        , allowNull: false
+        , field: 'id',
       },
       first_name: { type: DataTypes.STRING, allowNull: false, defaultValue: 'abc', field: 'first-name' },
       last_name: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
@@ -30,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: false,
-      underscored: true,
-      tableName: 'user',
+      underscored: false,
+      tableName: 'users',
       indexes: [
         // { fields: ['nickname'] },
         // { fields: ['display'] },

@@ -27,13 +27,13 @@ const migrationCommands = (transaction) => [
   {
     fn: 'createTable',
     params: [
-      'item',
+      'items',
       {
         id: {
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.UUIDV4,
+          defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
         title: { type: Sequelize.STRING, field: 'title', allowNull: false },
@@ -47,6 +47,11 @@ const migrationCommands = (transaction) => [
           field: 'updatedAt',
           allowNull: false,
         },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deletedAt',
+          allowNull: true,
+        },
       },
       { transaction },
     ],
@@ -54,13 +59,13 @@ const migrationCommands = (transaction) => [
   {
     fn: 'createTable',
     params: [
-      'type',
+      'types',
       {
         id: {
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.UUIDV4,
+          defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
         title: { type: Sequelize.STRING, field: 'title', allowNull: false },
@@ -74,6 +79,11 @@ const migrationCommands = (transaction) => [
           field: 'updatedAt',
           allowNull: false,
         },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deletedAt',
+          allowNull: true,
+        },
       },
       { transaction },
     ],
@@ -81,13 +91,13 @@ const migrationCommands = (transaction) => [
   {
     fn: 'createTable',
     params: [
-      'product',
+      'products',
       {
         id: {
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.UUIDV4,
+          defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
         price: {
@@ -115,20 +125,25 @@ const migrationCommands = (transaction) => [
           field: 'updatedAt',
           allowNull: false,
         },
-        item_id: {
-          type: Sequelize.UUID,
-          field: 'item_id',
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL',
-          references: { model: 'item', key: 'id' },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deletedAt',
           allowNull: true,
         },
-        type_id: {
+        itemId: {
           type: Sequelize.UUID,
-          field: 'type_id',
+          field: 'itemId',
           onUpdate: 'CASCADE',
           onDelete: 'SET NULL',
-          references: { model: 'type', key: 'id' },
+          references: { model: 'items', key: 'id' },
+          allowNull: true,
+        },
+        typeId: {
+          type: Sequelize.UUID,
+          field: 'typeId',
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL',
+          references: { model: 'types', key: 'id' },
           allowNull: true,
         },
       },
@@ -138,24 +153,24 @@ const migrationCommands = (transaction) => [
   {
     fn: 'createTable',
     params: [
-      'user',
+      'users',
       {
         id: {
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.UUIDV4,
+          defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
-        first_name: {
+        firstName: {
           type: Sequelize.STRING,
-          field: 'first-name',
+          field: 'firstName',
           defaultValue: 'abc',
           allowNull: true,
         },
-        last_name: {
+        lastName: {
           type: Sequelize.STRING,
-          field: 'last_name',
+          field: 'lastName',
           defaultValue: '',
           allowNull: false,
         },
@@ -169,40 +184,37 @@ const migrationCommands = (transaction) => [
           type: Sequelize.ENUM('male', 'female', 'unknown'),
           field: 'gender',
           defaultValue: 'unknown',
+          allowNull: true,
+        },
+        birthDate: {
+          type: Sequelize.DATEONLY,
+          field: 'birthDate',
+          allowNull: true,
+        },
+        lastLoginDt: {
+          type: Sequelize.DATE,
+          field: 'lastLoginDt',
+          allowNull: true,
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: 'createdAt',
           allowNull: false,
         },
-        birth_date: {
-          type: Sequelize.DATEONLY,
-          field: 'birth_date',
-          allowNull: true,
-        },
-        last_login_dt: {
+        updatedAt: {
           type: Sequelize.DATE,
-          field: 'last_login_dt',
-          allowNull: true,
+          field: 'updatedAt',
+          allowNull: false,
         },
-        created_at: {
+        deletedAt: {
           type: Sequelize.DATE,
-          field: 'created_at',
-          defaultValue: Sequelize.NOW,
+          field: 'deletedAt',
           allowNull: true,
         },
-        email: { type: Sequelize.STRING, field: 'email', allowNull: false },
+        email: { type: Sequelize.STRING, field: 'email', allowNull: true },
         password: {
           type: Sequelize.STRING,
           field: 'password',
-          allowNull: false,
-        },
-        is_deleted: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_deleted',
-          defaultValue: false,
-          allowNull: false,
-        },
-        is_blocked: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_blocked',
-          defaultValue: false,
           allowNull: false,
         },
       },
@@ -212,7 +224,7 @@ const migrationCommands = (transaction) => [
   {
     fn: 'createTable',
     params: [
-      'order',
+      'orders',
       {
         id: {
           type: Sequelize.UUID,
@@ -222,20 +234,35 @@ const migrationCommands = (transaction) => [
           allowNull: false,
         },
         title: { type: Sequelize.STRING, field: 'title', allowNull: false },
-        user_id: {
+        userId: {
           type: Sequelize.UUID,
-          field: 'user_id',
+          field: 'userId',
           onUpdate: 'CASCADE',
           onDelete: 'SET NULL',
-          references: { model: 'user', key: 'id' },
+          references: { model: 'users', key: 'id' },
           allowNull: true,
         },
-        product_id: {
+        productId: {
           type: Sequelize.UUID,
-          field: 'product_id',
+          field: 'productId',
           onUpdate: 'CASCADE',
           onDelete: 'SET NULL',
-          references: { model: 'product', key: 'id' },
+          references: { model: 'products', key: 'id' },
+          allowNull: true,
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: 'createdAt',
+          allowNull: false,
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: 'updatedAt',
+          allowNull: false,
+        },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deletedAt',
           allowNull: true,
         },
       },
@@ -245,7 +272,7 @@ const migrationCommands = (transaction) => [
   {
     fn: 'addIndex',
     params: [
-      'type',
+      'types',
       ['title'],
       { indexName: 'type_title', name: 'type_title', transaction },
     ],
@@ -253,7 +280,7 @@ const migrationCommands = (transaction) => [
   {
     fn: 'addIndex',
     params: [
-      'item',
+      'items',
       ['title'],
       { indexName: 'item_title', name: 'item_title', transaction },
     ],
@@ -261,7 +288,7 @@ const migrationCommands = (transaction) => [
   {
     fn: 'addIndex',
     params: [
-      'user',
+      'users',
       ['nickname'],
       { indexName: 'user_nickname', name: 'user_nickname', transaction },
     ],
@@ -271,23 +298,23 @@ const migrationCommands = (transaction) => [
 const rollbackCommands = (transaction) => [
   {
     fn: 'dropTable',
-    params: ['item', { transaction }],
+    params: ['orders', { transaction }],
   },
   {
     fn: 'dropTable',
-    params: ['type', { transaction }],
+    params: ['users', { transaction }],
   },
   {
     fn: 'dropTable',
-    params: ['product', { transaction }],
+    params: ['products', { transaction }],
   },
   {
     fn: 'dropTable',
-    params: ['user', { transaction }],
+    params: ['items', { transaction }],
   },
   {
     fn: 'dropTable',
-    params: ['order', { transaction }],
+    params: ['types', { transaction }],
   },
 ];
 
@@ -319,8 +346,11 @@ module.exports = {
   pos,
   useTransaction,
 
-  up: (queryInterface, sequelize) =>
+  up: (queryInterface, sequelize) => // {
+    // eslint-disable-next-line max-len
+    // await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
     execute(queryInterface, sequelize, migrationCommands),
+  // },
 
   down: (queryInterface, sequelize) =>
     execute(queryInterface, sequelize, rollbackCommands),
