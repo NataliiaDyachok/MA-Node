@@ -37,21 +37,9 @@ const migrationCommands = (transaction) => [
           allowNull: false,
         },
         title: { type: Sequelize.STRING, field: 'title', allowNull: false },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'createdAt',
-          allowNull: false,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updatedAt',
-          allowNull: false,
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deletedAt',
-          allowNull: true,
-        },
+        createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
+        updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
+        deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },
       },
       { transaction },
     ],
@@ -69,21 +57,9 @@ const migrationCommands = (transaction) => [
           allowNull: false,
         },
         title: { type: Sequelize.STRING, field: 'title', allowNull: false },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'createdAt',
-          allowNull: false,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updatedAt',
-          allowNull: false,
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deletedAt',
-          allowNull: true,
-        },
+        createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
+        updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
+        deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },
       },
       { transaction },
     ],
@@ -100,36 +76,12 @@ const migrationCommands = (transaction) => [
           defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
-        price: {
-          type: Sequelize.DECIMAL(6, 2),
-          field: 'price',
-          allowNull: false,
-        },
-        quantity: {
-          type: Sequelize.DECIMAL(6, 2),
-          field: 'quantity',
-          allowNull: false,
-        },
-        unit: {
-          type: Sequelize.STRING,
-          field: 'unit',
-          allowNull: false,
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'createdAt',
-          allowNull: false,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updatedAt',
-          allowNull: false,
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deletedAt',
-          allowNull: true,
-        },
+        price: { type: Sequelize.DECIMAL(6, 2), field: 'price', allowNull: false, },
+        quantity: { type: Sequelize.DECIMAL(6, 2), field: 'quantity', allowNull: false, },
+        unit: { type: Sequelize.STRING, field: 'unit', allowNull: false, },
+        createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
+        updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
+        deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },
         itemId: {
           type: Sequelize.UUID,
           field: 'itemId',
@@ -162,61 +114,16 @@ const migrationCommands = (transaction) => [
           defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
-        firstName: {
-          type: Sequelize.STRING,
-          field: 'firstName',
-          defaultValue: 'abc',
-          allowNull: true,
-        },
-        lastName: {
-          type: Sequelize.STRING,
-          field: 'lastName',
-          defaultValue: '',
-          allowNull: false,
-        },
-        nickname: {
-          type: Sequelize.STRING,
-          field: 'nickname',
-          defaultValue: '',
-          allowNull: false,
-        },
-        gender: {
-          type: Sequelize.ENUM('male', 'female', 'unknown'),
-          field: 'gender',
-          defaultValue: 'unknown',
-          allowNull: true,
-        },
-        birthDate: {
-          type: Sequelize.DATEONLY,
-          field: 'birthDate',
-          allowNull: true,
-        },
-        lastLoginDt: {
-          type: Sequelize.DATE,
-          field: 'lastLoginDt',
-          allowNull: true,
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'createdAt',
-          allowNull: false,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updatedAt',
-          allowNull: false,
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deletedAt',
-          allowNull: true,
-        },
+        firstName: { type: Sequelize.STRING, field: 'firstName', defaultValue: 'abc', allowNull: true, },
+        lastName: { type: Sequelize.STRING, field: 'lastName', defaultValue: '', allowNull: false, },
+        nickname: { type: Sequelize.STRING, field: 'nickname', defaultValue: '', allowNull: false, },
+        birthDate: { type: Sequelize.DATEONLY, field: 'birthDate', allowNull: true, },
+        lastLoginDt: { type: Sequelize.DATE, field: 'lastLoginDt', allowNull: true, },
+        createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
+        updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
+        deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },
         email: { type: Sequelize.STRING, field: 'email', allowNull: true },
-        password: {
-          type: Sequelize.STRING,
-          field: 'password',
-          allowNull: false,
-        },
+        password: { type: Sequelize.STRING, field: 'password', allowNull: false, },
       },
       { transaction },
     ],
@@ -250,21 +157,9 @@ const migrationCommands = (transaction) => [
           references: { model: 'products', key: 'id' },
           allowNull: true,
         },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'createdAt',
-          allowNull: false,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updatedAt',
-          allowNull: false,
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deletedAt',
-          allowNull: true,
-        },
+        createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
+        updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
+        deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },
       },
       { transaction },
     ],
@@ -346,11 +241,11 @@ module.exports = {
   pos,
   useTransaction,
 
-  up: (queryInterface, sequelize) => // {
+  up: async  (queryInterface, sequelize) => {
     // eslint-disable-next-line max-len
-    // await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-    execute(queryInterface, sequelize, migrationCommands),
-  // },
+    await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    execute(queryInterface, sequelize, migrationCommands);
+  },
 
   down: (queryInterface, sequelize) =>
     execute(queryInterface, sequelize, rollbackCommands),

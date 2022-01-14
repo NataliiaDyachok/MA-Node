@@ -42,7 +42,8 @@ module.exports = (sequelize, DataTypes) => {
   Model.associate = (models) => {
     // Model.belongsTo(models.city);
     // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
-    Model.hasMany(models.order, { foreignKey: { allowNull: false } });
+    // Model.hasMany(models.order, { foreignKey: { allowNull: false } });
+    Model.belongsToMany(models.product, {through: models.order});
   };
 
   return Model;

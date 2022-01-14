@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     Model.belongsTo(models.item, { foreignKey: { allowNull: false } });
     Model.belongsTo(models.type, { foreignKey: { allowNull: false } });
     // Model.belongsToMany(models.order, { foreignKey: { allowNull: false } });
+    Student.belongsToMany(models.user, {through: models.order});
   };
 
   return Model;
