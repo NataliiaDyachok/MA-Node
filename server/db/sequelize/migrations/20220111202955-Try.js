@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const Sequelize = require('sequelize');
@@ -137,7 +138,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.UUIDV4,
+          defaultValue: Sequelize.literal('uuid_generate_v4()'),
           allowNull: false,
         },
         title: { type: Sequelize.STRING, field: 'title', allowNull: false },
@@ -241,11 +242,11 @@ module.exports = {
   pos,
   useTransaction,
 
-  up: async  (queryInterface, sequelize) => {
+  up: async  (queryInterface, sequelize) => // {
     // eslint-disable-next-line max-len
-    await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-    execute(queryInterface, sequelize, migrationCommands);
-  },
+    // await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    execute(queryInterface, sequelize, migrationCommands),
+  // },
 
   down: (queryInterface, sequelize) =>
     execute(queryInterface, sequelize, rollbackCommands),

@@ -22,8 +22,9 @@ module.exports = (sequelize, DataTypes) => {
   Model.associate = (models) => {
     // Model.belongsTo(models.city);
     // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
-    // Model.belongsTo(models.user);
-    Model.hasMany(models.product, { foreignKey: { allowNull: false } });
+    Model.belongsTo(models.user);
+    Model.belongsTo(models.product);
+    // Model.hasMany(models.product, { foreignKey: { allowNull: false } });
   };
 
   return Model;

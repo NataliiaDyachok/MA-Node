@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
     unit: { type: DataTypes.STRING, allowNull: false, },
     price: { type: DataTypes.DECIMAL, allowNull: false, defaultValue: 0.0, },
     quantity: { type: DataTypes.DECIMAL, allowNull: false, defaultValue: 1.0, },
-    deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, }
+    deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, },
+    createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), },
+    updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), }
     },
     {
       timestamps: false,
@@ -28,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     Model.belongsTo(models.item, { foreignKey: { allowNull: false } });
     Model.belongsTo(models.type, { foreignKey: { allowNull: false } });
     // Model.belongsToMany(models.order, { foreignKey: { allowNull: false } });
-    Student.belongsToMany(models.user, {through: models.order});
+    // Model.belongsToMany(models.user, {through: models.order});
   };
 
   return Model;

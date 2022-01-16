@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define( 'item', {
     // eslint-disable-next-line max-len
@@ -7,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
       , allowNull: false
       , field: 'id', },
     title: { type: DataTypes.STRING, allowNull: false },
-    deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, }
+    deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, },
+    createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), },
+    updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), }
     },
     {
       timestamps: false,
@@ -19,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
-  Model.associate = (models) => {
-    // Model.belongsTo(models.city);
-    // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
-    Model.belongsTo(models.product);
-  };
+  // Model.associate = (models) => {
+  //   // Model.belongsTo(models.city);
+  //   // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
+  //   // Model.belongsTo(models.product);
+  // };
 
   return Model;
 };
