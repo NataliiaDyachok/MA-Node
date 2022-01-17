@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       , allowNull: false
       , field: 'id', },
     title: { type: DataTypes.STRING, allowNull: false },
-    deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, }
+    quantity: { type: DataTypes.DECIMAL, allowNull: false, defaultValue: 1.0, },
+    deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, },
+    createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), },
+    updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), }
     },
     {
       timestamps: false,

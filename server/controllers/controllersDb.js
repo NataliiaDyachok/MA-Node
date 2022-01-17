@@ -1,13 +1,7 @@
 const Sequelize = require('sequelize');
 const ApiError = require('../error/ApiError');
-const { helper1: helpFilterItems } = require('../helpers');
-
-// const { db: dbConfig } = require('../config');
-// const db = require('../db')(dbConfig);
-
+const { helper1: helpFilterItems, helperDB } = require('../helpers');
 const db = require('../db');
-
-// const dbWrap = db.dbWrapper();
 
 const getModifiedProductsArray = (arrProducts) =>
   Array.from(arrProducts, product => {
@@ -40,6 +34,23 @@ const productPost = (req, res, next) => {
       db.dbWrapper().createProduct(itemProduct)
         .then(p => console.log(`p ${JSON.stringify(p)}`));
     });
+
+  } catch (error) {
+    return next(ApiError.badRequest(error));
+  }
+
+  return res.json(req.body);
+};
+
+const orderPost = (req, res, next) => {
+
+  try {
+    const errorsArray = helpFilterItems.validate(req.body);
+    if (errorsArray.length>0){
+      throw(errorsArray);
+    }
+
+    helperDB.checkAndInputOrderData(arrProducts);
 
   } catch (error) {
     return next(ApiError.badRequest(error));
@@ -123,4 +134,5 @@ module.exports = {
   productGet,
   productDelete,
   productGetAll,
+  orderPost,
 };

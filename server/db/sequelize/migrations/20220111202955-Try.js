@@ -6,14 +6,14 @@ const Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
- * createTable => "item", deps: []
- * createTable => "type", deps: []
- * createTable => "product", deps: [item, type]
- * createTable => "user", deps: []
- * createTable => "order", deps: [user, product]
- * addIndex(item_title) => "item"
- * addIndex(type_title) => "type"
- * addIndex(user_nickname) => "user"
+ * createTable => "items", deps: []
+ * createTable => "types", deps: []
+ * createTable => "products", deps: [items, type]
+ * createTable => "usesr", deps: []
+ * createTable => "orders", deps: [users, product]
+ * addIndex(item_title) => "items"
+ * addIndex(type_title) => "types"
+ * addIndex(user_nickname) => "users"
  *
  */
 
@@ -158,6 +158,7 @@ const migrationCommands = (transaction) => [
           references: { model: 'products', key: 'id' },
           allowNull: true,
         },
+        quantity: { type: Sequelize.DECIMAL(6, 2), field: 'quantity', allowNull: false, },
         createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
         updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
         deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },

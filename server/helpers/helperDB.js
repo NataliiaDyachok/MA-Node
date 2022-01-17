@@ -32,5 +32,23 @@ const getModifiedProductsArray = (arrProducts) =>
     }
 };
 
-module.exports = writeArrayInDB;
+async function checkAndInputOrderData(arrProducts){
+  const arr = getModifiedProductsArray(arrProducts);
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const productItem of arr) {
+    // eslint-disable-next-line no-await-in-loop
+    await db.dbWrapper().checkAndCreateItemOrder(
+      productItem,
+      (err, res) => {
+          console.log(`!!! Product err done ${err}`);
+          console.log(`!!! Product res done ${res}`);
+      });
+  }
+};
+
+
+module.exports = {writeArrayInDB, 
+  checkAndInputOrderData,
+};
 
