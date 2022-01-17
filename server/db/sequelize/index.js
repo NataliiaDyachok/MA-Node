@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable import/no-dynamic-require */
 const { readdirSync } = require('fs');
 const path = require('path');
@@ -279,6 +280,112 @@ module.exports = (config) => {
 
       return true;
     },
+
+    checkAndCreateItemOrder: async (product, done) => {
+
+      if (!Object.keys(product).length){
+        const err = new Error('ERROR: Nothing to update' );
+        done(err, false);
+        return false;
+      }
+
+      try {
+        const p = JSON.parse(JSON.stringify(product));
+        const timeStamp = Date.now();
+        p.price = p.price || 0;
+        p.quantity = p.quantity || 1;
+        p.createdAt = timeStamp;
+        p.updatedAt = timeStamp;
+
+        const resProduct = await db.product.findOne({
+          where: {
+            unit: p.unit,
+            deletedAt: { [Sequelize.Op.is]: null }
+          },
+          include: [{
+            model: db.item,
+            where: {
+              deletedAt: { [Sequelize.Op.is]: null },
+              title: p.item,
+            }
+          },
+          {
+            model: db.type,
+            where: {
+              deletedAt: { [Sequelize.Op.is]: null },
+              title: p.type,
+            }
+          }]
+        });
+
+        if (!resProduct){
+          console.log(`ERROR: product ${JSON.stringify(p)} not found`);
+          done('ERROR: product not found', JSON.stringify(p));
+          return true;
+        };
+
+        const objOrder = {
+          title: 'order number ',
+          productId: resProduct.get('id'),
+          quantity: p.quantity,
+          createdAt: timeStamp,
+          updatedAt: timeStamp,
+          userId: resProduct.get('id'),
+        };
+
+        const resOrder = await db.order.create(objOrder);
+
+        console.log(
+          `INFO: new product created ${JSON.stringify(resOrder)}`
+        );
+        done(null, JSON.stringify(resOrder));
+
+        // const [productItem, productCreated] = await db.product.findOrCreate({
+        //   where: {
+        //     [Sequelize.Op.and]:
+        //       [
+        //         { itemId: p.itemId },
+        //         { typeId: p.typeId },
+        //         { unit: p.unit },
+        //         // { price: product.price }, { quantity: product.quantity },
+        //       ],
+        //       deletedAt: { [Sequelize.Op.is]: null }
+        //   },
+        //   defaults: {
+        //     createdAt: timeStamp,
+        //     updatedAt: timeStamp,
+        //     deletedAt: null,
+        //     unit: p.unit,
+        //     price: p.price || 0,
+        //     quantity: p.quantity || 1,
+        //     itemId: p.itemId,
+        //     typeId: p.typeId,
+        //   },
+        // });
+        // if (productCreated){
+        //   // eslint-disable-next-line max-len
+        //   console.log(`INFO: entity product with id ${productItem.id} was created`);
+        //   done(null, JSON.stringify(productItem));
+        // } else {
+        //   productItem.set('price',
+        //     Number(productItem.get('price')) + Number(product.price));
+        //   productItem.set('quantity',
+        //     Number(productItem.get('quantity')) + Number(product.quantity));
+
+        //   await productItem.save();
+        //   // eslint-disable-next-line max-len
+        //   console.log(`INFO: entity product with id ${productItem.id} was updated`);
+        //   done(null, JSON.stringify(productItem));
+        // }
+      } catch (err){
+        console.error(err.message || err);
+        done(err, '!!! ERROR Product.save');
+        throw err;
+      };
+
+      return true;
+    },
+
 
     deleteProduct: async (id) => {
       try{

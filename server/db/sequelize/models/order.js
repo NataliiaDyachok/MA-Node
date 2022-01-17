@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define( 'order', {
     // eslint-disable-next-line max-len

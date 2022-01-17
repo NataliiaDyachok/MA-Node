@@ -12,8 +12,6 @@ router.delete('/product', controllersDb.productDelete);
 
 router.put('/order', controllersDb.orderPost); // add
 
-// router.put('/csv', handleStreamRoutes);
-
 router.use(controllers.notFound);
 
 module.exports =  router;

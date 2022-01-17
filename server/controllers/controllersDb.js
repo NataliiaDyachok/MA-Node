@@ -50,7 +50,7 @@ const orderPost = (req, res, next) => {
       throw(errorsArray);
     }
 
-    helperDB.checkAndInputOrderData(arrProducts);
+    helperDB.checkAndInputOrderData(req.body);
 
   } catch (error) {
     return next(ApiError.badRequest(error));
