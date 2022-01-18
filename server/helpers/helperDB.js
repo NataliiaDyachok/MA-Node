@@ -32,7 +32,7 @@ const getModifiedProductsArray = (arrProducts) =>
     }
 };
 
-async function checkAndInputOrderData(arrProducts){
+async function checkAndInputOrderData(arrProducts, [login, password]){
   const arr = getModifiedProductsArray(arrProducts);
 
   // eslint-disable-next-line no-restricted-syntax
@@ -40,6 +40,7 @@ async function checkAndInputOrderData(arrProducts){
     // eslint-disable-next-line no-await-in-loop
     await db.dbWrapper().checkAndCreateItemOrder(
       productItem,
+      [login, password],
       (err, res) => {
           console.log(`!!! Product err done ${err}`);
           console.log(`!!! Product res done ${res}`);
@@ -48,7 +49,7 @@ async function checkAndInputOrderData(arrProducts){
 };
 
 
-module.exports = {writeArrayInDB, 
+module.exports = {writeArrayInDB,
   checkAndInputOrderData,
 };
 

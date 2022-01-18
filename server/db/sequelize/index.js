@@ -281,7 +281,7 @@ module.exports = (config) => {
       return true;
     },
 
-    checkAndCreateItemOrder: async (product, done) => {
+    checkAndCreateItemOrder: async (product, [userLogin, userPassword], done) => {
 
       if (!Object.keys(product).length){
         const err = new Error('ERROR: Nothing to update' );
@@ -323,6 +323,36 @@ module.exports = (config) => {
           done('ERROR: product not found', JSON.stringify(p));
           return true;
         };
+        if (Number(resProduct.get('quantity')) < p.quantity){
+          console.log(`ERROR: product ${JSON.stringify(p)} not enough`);
+          done(`ERROR: product not enough. Balance ${resProduct.get('quantity')}`, JSON.stringify(p));
+          return true;
+        };
+
+        const [user, userCreated] = await db.user.findOrCreate({
+            where: {
+              [Sequelize.Op.and]:
+                [
+                  { nickname: userLogin },
+                  { password: userPassword }
+                ],
+                deletedAt: { [Sequelize.Op.is]: null }
+            },
+            defaults: {
+              createdAt: timeStamp,
+              updatedAt: timeStamp,
+              deletedAt: null,
+              nickname: userLogin,
+              password: userPassword,
+              email: 'email@gmail.com',
+              lastLoginDt: timeStamp,
+              firstName: '',
+              lastName: '',
+            },
+        });
+        if (userCreated){
+          console.log(`INFO: entity user with id ${user.id} was created`);
+        }
 
         const objOrder = {
           title: 'order number ',
@@ -330,56 +360,22 @@ module.exports = (config) => {
           quantity: p.quantity,
           createdAt: timeStamp,
           updatedAt: timeStamp,
-          userId: resProduct.get('id'),
+          userId: user.get('id'),
         };
 
         const resOrder = await db.order.create(objOrder);
+        resProduct.set('quantity',
+          Number(resProduct.get('quantity')) - Number(p.quantity));
+        await resProduct.save();
 
         console.log(
-          `INFO: new product created ${JSON.stringify(resOrder)}`
+          `INFO: new item by order created ${JSON.stringify(resOrder)}. Balance ${Number(resProduct.get('quantity'))}`
         );
         done(null, JSON.stringify(resOrder));
 
-        // const [productItem, productCreated] = await db.product.findOrCreate({
-        //   where: {
-        //     [Sequelize.Op.and]:
-        //       [
-        //         { itemId: p.itemId },
-        //         { typeId: p.typeId },
-        //         { unit: p.unit },
-        //         // { price: product.price }, { quantity: product.quantity },
-        //       ],
-        //       deletedAt: { [Sequelize.Op.is]: null }
-        //   },
-        //   defaults: {
-        //     createdAt: timeStamp,
-        //     updatedAt: timeStamp,
-        //     deletedAt: null,
-        //     unit: p.unit,
-        //     price: p.price || 0,
-        //     quantity: p.quantity || 1,
-        //     itemId: p.itemId,
-        //     typeId: p.typeId,
-        //   },
-        // });
-        // if (productCreated){
-        //   // eslint-disable-next-line max-len
-        //   console.log(`INFO: entity product with id ${productItem.id} was created`);
-        //   done(null, JSON.stringify(productItem));
-        // } else {
-        //   productItem.set('price',
-        //     Number(productItem.get('price')) + Number(product.price));
-        //   productItem.set('quantity',
-        //     Number(productItem.get('quantity')) + Number(product.quantity));
-
-        //   await productItem.save();
-        //   // eslint-disable-next-line max-len
-        //   console.log(`INFO: entity product with id ${productItem.id} was updated`);
-        //   done(null, JSON.stringify(productItem));
-        // }
       } catch (err){
         console.error(err.message || err);
-        done(err, '!!! ERROR Product.save');
+        done(err, '!!! ERROR order.save');
         throw err;
       };
 

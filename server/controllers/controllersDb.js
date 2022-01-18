@@ -48,9 +48,13 @@ const orderPost = (req, res, next) => {
     const errorsArray = helpFilterItems.validate(req.body);
     if (errorsArray.length>0){
       throw(errorsArray);
-    }
+    };
 
-    helperDB.checkAndInputOrderData(req.body);
+    const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+    const [login, password] =
+    Buffer.from(b64auth, 'base64').toString().split(':');
+
+    helperDB.checkAndInputOrderData(req.body, [login, password]);
 
   } catch (error) {
     return next(ApiError.badRequest(error));
