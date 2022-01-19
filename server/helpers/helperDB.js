@@ -48,7 +48,6 @@ async function checkAndInputOrderData(arrProducts, [login, password]){
   }
 };
 
-
 module.exports = {writeArrayInDB,
   checkAndInputOrderData,
 };

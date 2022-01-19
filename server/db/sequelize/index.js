@@ -389,7 +389,7 @@ module.exports = (config) => {
 
         // const res = await db.Product.destroy({ where: {id} });
         const res =
-          await db.Product.update({ deletedAt: Date.now() }, { where: {id} });
+          await db.product.update({ deletedAt: Date.now() }, { where: {id} });
 
         console.log(
           `INFO: product by id ${JSON.stringify(id)} was deleted`

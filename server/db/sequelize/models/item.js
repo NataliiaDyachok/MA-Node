@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
-  // Model.associate = (models) => {
-  //   // Model.belongsTo(models.city);
-  //   // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
-  //   // Model.belongsTo(models.product);
-  // };
+  Model.associate = (models) => {
+    // Model.belongsTo(models.city);
+    Model.hasMany(models.product, { foreignKey: { allowNull: false } });
+    // Model.belongsTo(models.product);
+  };
 
   return Model;
 };

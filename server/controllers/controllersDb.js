@@ -20,7 +20,7 @@ const getModifiedProductsArray = (arrProducts) =>
     return cloneItem;
   });
 
-const productPost = (req, res, next) => {
+const productPost = async (req, res, next) => {
 
   try {
     const errorsArray = helpFilterItems.validate(req.body);
@@ -30,10 +30,13 @@ const productPost = (req, res, next) => {
 
     const arrProducts = getModifiedProductsArray(req.body);
 
-    arrProducts.forEach(itemProduct => {
-      db.dbWrapper().createProduct(itemProduct)
-        .then(p => console.log(`p ${JSON.stringify(p)}`));
-    });
+    // eslint-disable-next-line no-restricted-syntax
+    for (const itemProduct of arrProducts) {
+      // eslint-disable-next-line no-await-in-loop
+      await db.dbWrapper().createProduct(itemProduct)
+      .then(p => console.log(`p ${JSON.stringify(p)}`));
+    }
+
 
   } catch (error) {
     return next(ApiError.badRequest(error));
