@@ -45,7 +45,9 @@ const productPost = async (req, res, next) => {
   return res.json(req.body);
 };
 
-const orderPost = (req, res, next) => {
+const orderPost = async (req, res, next) => {
+
+  const retProductsArr = [];
 
   try {
     const errorsArray = helpFilterItems.validate(req.body);
@@ -57,13 +59,14 @@ const orderPost = (req, res, next) => {
     const [login, password] =
     Buffer.from(b64auth, 'base64').toString().split(':');
 
-    helperDB.checkAndInputOrderData(req.body, [login, password]);
+    // eslint-disable-next-line max-len
+    await helperDB.checkAndInputOrderData(req.body, [login, password], retProductsArr);
 
   } catch (error) {
     return next(ApiError.badRequest(error));
   }
 
-  return res.json(req.body);
+  return res.json(retProductsArr);
 };
 
 const productUpdate = (req, res, next) => {

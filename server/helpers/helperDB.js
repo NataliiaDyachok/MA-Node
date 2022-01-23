@@ -32,7 +32,7 @@ const getModifiedProductsArray = (arrProducts) =>
     }
 };
 
-async function checkAndInputOrderData(arrProducts, [login, password]){
+async function checkAndInputOrderData(arrProducts, [login, password], retProductsArr){
   const arr = getModifiedProductsArray(arrProducts);
 
   // eslint-disable-next-line no-restricted-syntax
@@ -42,8 +42,15 @@ async function checkAndInputOrderData(arrProducts, [login, password]){
       productItem,
       [login, password],
       (err, res) => {
-          console.log(`!!! Product err done ${err}`);
-          console.log(`!!! Product res done ${res}`);
+          const productItemClone = { ...productItem };
+          if (err){
+            productItemClone.result = err.message || err;
+            console.log(`!!! Product err done ${err}`);
+          } else {
+            productItemClone.result = 'done';
+            console.log(`!!! Product res done ${res}`);
+          }
+          retProductsArr.push(productItemClone);
       });
   }
 };
