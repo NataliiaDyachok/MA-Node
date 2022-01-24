@@ -1,15 +1,13 @@
 /* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
-  const Model = sequelize.define( 'product', {
-    id: { type: DataTypes.UUID
+  const Model = sequelize.define( 'order', {
+    // eslint-disable-next-line max-len
+    id: {  type: DataTypes.UUID
       , defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()')
       , primaryKey: true
       , allowNull: false
       , field: 'id', },
-    // item: { type: DataTypes.STRING, allowNull: false, },
-    // type: { type: DataTypes.STRING, allowNull: false, },
-    unit: { type: DataTypes.STRING, allowNull: false, },
-    price: { type: DataTypes.DECIMAL, allowNull: false, defaultValue: 0.0, },
+    title: { type: DataTypes.STRING, allowNull: false },
     quantity: { type: DataTypes.DECIMAL, allowNull: false, defaultValue: 1.0, },
     deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, },
     createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: Date.now(), },
@@ -18,19 +16,19 @@ module.exports = (sequelize, DataTypes) => {
     {
       timestamps: false,
       underscored: false,
-      tableName: 'products',
+      tableName: 'orders',
+      indexes: [
+        { fields: ['title'] },
+      ],
     },
   );
 
   Model.associate = (models) => {
     // Model.belongsTo(models.city);
     // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
-    //  belongsToMany
-
-    Model.belongsTo(models.item, { foreignKey: { allowNull: false } });
-    Model.belongsTo(models.type, { foreignKey: { allowNull: false } });
-    // Model.belongsToMany(models.order, { foreignKey: { allowNull: false } });
-    // Model.belongsToMany(models.user, {through: models.order});
+    Model.belongsTo(models.user);
+    Model.belongsTo(models.product);
+    // Model.hasMany(models.product, { foreignKey: { allowNull: false } });
   };
 
   return Model;

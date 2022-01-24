@@ -32,5 +32,30 @@ const getModifiedProductsArray = (arrProducts) =>
     }
 };
 
-module.exports = writeArrayInDB;
+async function checkAndInputOrderData(arrProducts, [login, password], retProductsArr){
+  const arr = getModifiedProductsArray(arrProducts);
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const productItem of arr) {
+    // eslint-disable-next-line no-await-in-loop
+    await db.dbWrapper().checkAndCreateItemOrder(
+      productItem,
+      [login, password],
+      (err, res) => {
+          const productItemClone = { ...productItem };
+          if (err){
+            productItemClone.result = err.message || err;
+            console.log(`!!! Product err done ${err}`);
+          } else {
+            productItemClone.result = 'done';
+            console.log(`!!! Product res done ${res}`);
+          }
+          retProductsArr.push(productItemClone);
+      });
+  }
+};
+
+module.exports = {writeArrayInDB,
+  checkAndInputOrderData,
+};
 

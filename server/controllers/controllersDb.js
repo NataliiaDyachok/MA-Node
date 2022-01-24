@@ -1,13 +1,7 @@
 const Sequelize = require('sequelize');
 const ApiError = require('../error/ApiError');
-const { helper1: helpFilterItems } = require('../helpers');
-
-// const { db: dbConfig } = require('../config');
-// const db = require('../db')(dbConfig);
-
+const { helper1: helpFilterItems, helperDB } = require('../helpers');
 const db = require('../db');
-
-// const dbWrap = db.dbWrapper();
 
 const getModifiedProductsArray = (arrProducts) =>
   Array.from(arrProducts, product => {
@@ -26,7 +20,7 @@ const getModifiedProductsArray = (arrProducts) =>
     return cloneItem;
   });
 
-const productPost = (req, res, next) => {
+const productPost = async (req, res, next) => {
 
   try {
     const errorsArray = helpFilterItems.validate(req.body);
@@ -36,16 +30,43 @@ const productPost = (req, res, next) => {
 
     const arrProducts = getModifiedProductsArray(req.body);
 
-    arrProducts.forEach(itemProduct => {
-      db.dbWrapper().createProduct(itemProduct)
-        .then(p => console.log(`p ${JSON.stringify(p)}`));
-    });
+    // eslint-disable-next-line no-restricted-syntax
+    for (const itemProduct of arrProducts) {
+      // eslint-disable-next-line no-await-in-loop
+      await db.dbWrapper().createProduct(itemProduct)
+      .then(p => console.log(`p ${JSON.stringify(p)}`));
+    }
+
 
   } catch (error) {
     return next(ApiError.badRequest(error));
   }
 
   return res.json(req.body);
+};
+
+const orderPost = async (req, res, next) => {
+
+  const retProductsArr = [];
+
+  try {
+    const errorsArray = helpFilterItems.validate(req.body);
+    if (errorsArray.length>0){
+      throw(errorsArray);
+    };
+
+    const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+    const [login, password] =
+    Buffer.from(b64auth, 'base64').toString().split(':');
+
+    // eslint-disable-next-line max-len
+    await helperDB.checkAndInputOrderData(req.body, [login, password], retProductsArr);
+
+  } catch (error) {
+    return next(ApiError.badRequest(error));
+  }
+
+  return res.json(retProductsArr);
 };
 
 const productUpdate = (req, res, next) => {
@@ -123,4 +144,5 @@ module.exports = {
   productGet,
   productDelete,
   productGetAll,
+  orderPost,
 };

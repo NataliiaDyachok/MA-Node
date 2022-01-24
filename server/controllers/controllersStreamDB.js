@@ -4,10 +4,10 @@ const ApiError = require('../error/ApiError');
 
 const promisifiedPipeline = util.promisify(pipeline);
 const {scvToDB: createCsvToDB,
-    helperDB: writeArrayInDB} = require('../helpers');
+    helperDB} = require('../helpers');
 
 const changeArr = async (arr) => {
-  await writeArrayInDB(arr)
+  await helperDB.writeArrayInDB(arr)
     .then(() => {
       console.log('Writing to the database is over');
     });

@@ -30,12 +30,6 @@ const start = async () => {
     db.setType('sequelize');
     console.log(`Now db is ${db.getType()}`);
 
-
-    // const p = await db.
-    //   createProduct(
-      // {item:'apple', type:'Fuji', unit: 'kilo', price: 10, quantity: 3});
-    // console.log(`p ${JSON.stringify(p)}`);
-
     app.listen(port, () =>
         console.log(`Server successfully started on port ${port}`));
   } catch (e) {

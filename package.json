@@ -4,7 +4,10 @@
   "description": "",
   "main": "../server/index.js",
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "sequelize:migrate:make": "./node_modules/.bin/sequelize --migrations-path=./server/db/sequelize/migrations/ migration:generate --name",
+    "sequelize:migrate:latest": "./node_modules/.bin/sequelize --migrations-path=./server/db/sequelize/migrations/ --config=./server/db/sequelize/config/config.js db:migrate",
+    "sequelize:migrate:undo": "./node_modules/.bin/sequelize --migrations-path=./server/db/sequelize/migrations/ --config=./server/db/sequelize/config/config.js db:migrate:undo"
   },
   "keywords": [],
   "author": "",
