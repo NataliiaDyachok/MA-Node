@@ -411,15 +411,14 @@ module.exports = (config) => {
           where: {
             email: userEmail,
             deletedAt: { [Sequelize.Op.is]: null }
-          },
-          include: [{ all: true }]
+          }
         });
 
         console.log(
           `INFO: product by id ${JSON.stringify(res)}`
         );
 
-        return (typeof res !== 'undefined');
+        return res;
 
       } catch (err){
         console.error(err.message || err);
@@ -432,14 +431,11 @@ module.exports = (config) => {
       const timeStamp = Date.now();
 
       const cloneUser = JSON.parse(JSON.stringify(user));
-      cloneUser.createdAt = timeStamp;
-      cloneUser.updatedAt = timeStamp;
       cloneUser.lastLoginDt = timeStamp;
+      cloneUser.nickname = cloneUser.email;
 
       const res = await db.user.create(cloneUser);
-
       return res;
-
     },
 
 

@@ -7,8 +7,6 @@ const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const router = require('./routes/index');
 // const { port, db: dbConfig } = require('./config');
 const { port } = require('./config');
-const {registerPost} = require('./controllers/controllersAuth');
-
 
 // const db = require('./db')(dbConfig);
 
@@ -21,8 +19,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'server')));
-
-router.post('/register', registerPost) ;
 
 // router.post('/login', async (request, response) => {
 //   try

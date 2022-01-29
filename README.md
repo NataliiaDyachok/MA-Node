@@ -49,3 +49,15 @@ body:
     {"item":"watermelon","type":"Nova","quantity":1,"pricePerItem":"$5"},
     {"item":"orange","type":"Navel","weight":6,"pricePerKilo":"$7"}
 ]
+
+// ======================================================================
+
+Homework-09
+
+POST http://localhost:3000/register
+body: 
+  {"firstName":"Ivan","lastName":"Ivanov","email":"ivanov@gmail.com","password":"qwe"}
+
+POST http://localhost:3000/login
+body: 
+  {"email":"sidorov@gmail.com","password":"qwe"}
