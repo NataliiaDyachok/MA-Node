@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       firstName: { type: DataTypes.STRING, allowNull: false, defaultValue: 'abc' },
       lastName: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
-      nickname: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
+      nickname: { type: DataTypes.STRING, allowNull: true, defaultValue: '' },
       birthDate: { type: DataTypes.DATEONLY, allowNull: true },
       lastLoginDt: { type: DataTypes.DATE, allowNull: true },
       deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null, },

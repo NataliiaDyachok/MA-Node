@@ -402,5 +402,46 @@ module.exports = (config) => {
         throw err;
       };
     },
+
+    findUsersEmail: async (userEmail) => {
+      try{
+        if (!userEmail){ throw new Error('ERROR: no email id defined' ); };
+
+        const res = await db.user.findOne({
+          where: {
+            email: userEmail,
+            deletedAt: { [Sequelize.Op.is]: null }
+          },
+          include: [{ all: true }]
+        });
+
+        console.log(
+          `INFO: product by id ${JSON.stringify(res)}`
+        );
+
+        return (typeof res !== 'undefined');
+
+      } catch (err){
+        console.error(err.message || err);
+        throw err;
+      };
+    },
+
+    createUser: async (user) => {
+
+      const timeStamp = Date.now();
+
+      const cloneUser = JSON.parse(JSON.stringify(user));
+      cloneUser.createdAt = timeStamp;
+      cloneUser.updatedAt = timeStamp;
+      cloneUser.lastLoginDt = timeStamp;
+
+      const res = await db.user.create(cloneUser);
+
+      return res;
+
+    },
+
+
   };
 };

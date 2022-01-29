@@ -21,6 +21,10 @@ class ApiError extends Error{
         return new ApiError(401, message);
     }
 
+    static notImplemented(message) {
+      return new ApiError(501, message);
+  }
+
     static fatal(message) {
       console.error(message);
       process.exit(1);
