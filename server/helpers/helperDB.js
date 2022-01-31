@@ -32,7 +32,7 @@ const getModifiedProductsArray = (arrProducts) =>
     }
 };
 
-async function checkAndInputOrderData(arrProducts, [login, password], retProductsArr){
+async function checkAndInputOrderData(arrProducts, userId, retProductsArr){
   const arr = getModifiedProductsArray(arrProducts);
 
   // eslint-disable-next-line no-restricted-syntax
@@ -40,7 +40,7 @@ async function checkAndInputOrderData(arrProducts, [login, password], retProduct
     // eslint-disable-next-line no-await-in-loop
     await db.dbWrapper().checkAndCreateItemOrder(
       productItem,
-      [login, password],
+      userId,
       (err, res) => {
           const productItemClone = { ...productItem };
           if (err){

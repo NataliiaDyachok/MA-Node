@@ -281,7 +281,7 @@ module.exports = (config) => {
       return true;
     },
 
-    checkAndCreateItemOrder: async (product, [userLogin, userPassword], done) => {
+    checkAndCreateItemOrder: async (product, userId, done) => {
 
       if (!Object.keys(product).length){
         const err = new Error('ERROR: Nothing to update' );
@@ -329,29 +329,15 @@ module.exports = (config) => {
           return true;
         };
 
-        const [user, userCreated] = await db.user.findOrCreate({
-            where: {
-              [Sequelize.Op.and]:
-                [
-                  { nickname: userLogin },
-                  { password: userPassword }
-                ],
-                deletedAt: { [Sequelize.Op.is]: null }
-            },
-            defaults: {
-              createdAt: timeStamp,
-              updatedAt: timeStamp,
-              deletedAt: null,
-              nickname: userLogin,
-              password: userPassword,
-              email: 'email@gmail.com',
-              lastLoginDt: timeStamp,
-              firstName: '',
-              lastName: '',
-            },
+        const resUser = await db.user.findOne({
+          where: {
+            id: userId,
+            deletedAt: { [Sequelize.Op.is]: null }
+          }
         });
-        if (userCreated){
-          console.log(`INFO: entity user with id ${user.id} was created`);
+        if (!resUser){
+          done('ERROR: user not found', JSON.stringify({ id: userId }));
+          return true;
         }
 
         const objOrder = {
@@ -360,7 +346,7 @@ module.exports = (config) => {
           quantity: p.quantity,
           createdAt: timeStamp,
           updatedAt: timeStamp,
-          userId: user.get('id'),
+          userId: resUser.get('id'),
         };
 
         const resOrder = await db.order.create(objOrder);

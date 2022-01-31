@@ -9,7 +9,6 @@ const router = new Router();
 router.post('/register', registerPost) ;
 router.post('/login', loginPost) ;
 
-// router.use('/', authorize);
 router.use(authorize);
 
 router.post('/product', controllersDb.productPost); // add
