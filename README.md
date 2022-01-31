@@ -60,4 +60,4 @@ body:
 
 POST http://localhost:3000/login
 body: 
-  {"email":"sidorov@gmail.com","password":"qwe"}
+  {"email":"ivanov@gmail.com","password":"qwe"}
