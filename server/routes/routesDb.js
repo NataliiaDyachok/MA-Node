@@ -2,12 +2,13 @@ const Router = require('express');
 const controllers = require('../controllers/controllers');
 const controllersDb = require('../controllers/controllersDb');
 // const handleStreamRoutes = require('../controllers/controllersStreamDB');
-const {registerPost, loginPost} = require('../controllers/controllersAuth');
+const {registerPost, loginPost, refreshPost} = require('../controllers/controllersAuth');
 const { authorize } = require('../middleware/authMiddleware');
 
 const router = new Router();
 router.post('/register', registerPost) ;
 router.post('/login', loginPost) ;
+router.post('/refresh', refreshPost) ;
 
 router.use(authorize);
 

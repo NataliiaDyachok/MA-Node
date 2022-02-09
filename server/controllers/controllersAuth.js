@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ApiError = require('../error/ApiError');
@@ -63,10 +64,32 @@ const loginPost = async (req, res, next) => {
 
     // Create Token
     const token =
-      jwt.sign({ id: user.id, roles: [] }, process.env.JWT_SECRET);
+      jwt.sign({ id: user.id, roles: [] },
+          process.env.ACCESS_TOKEN_SECRET,
+          {expiresIn: process.env.ACCESS_EXPIRES_IN});
+
+    const refreshToken =
+      jwt.sign({ id: user.id, roles: [] },
+        process.env.REFRESH_TOKEN_SECRET,
+          { expiresIn: process.env.REFRESH_EXPIRES_IN});
+
+    await db.dbWrapper().createRefreshToken(user.id, refreshToken);
+
+    // Set jwt refresh token in cookie as 'refresh_token'
+    res.cookie('refresh_token', refreshToken, {
+      // maxAge: 365 * 24 * 60 * 60 * 100, // session only cookie
+      maxAge: process.env.REFRESH_EXPIRES_IN,
+      httpOnly: true // cannot be modified using XSS or JS
+    });
+
+    const response = {
+        'status': 'Logged in',
+        'token': token,
+        'refreshToken': refreshToken,
+    };
 
     res.header('auth_token', token);
-    res.json({auth_token: token});
+    res.json(response);
 
   } catch(err) {
     console.log(err);
@@ -74,8 +97,58 @@ const loginPost = async (req, res, next) => {
   }
 };
 
+const refreshPost = async (req, res, next) => {
+  try {
+
+    const { refresh_token } = req.cookies;
+    if (!refresh_token){
+      next(ApiError.authenticationRequired('Access denied.'));
+      return;
+    }
+
+    const verified = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
+    if (!verified || !verified.id){
+      next(ApiError.authenticationRequired('Access denied.'));
+      return;
+    }
+
+    const token =
+      jwt.sign({ id: verified.id, roles: [] },
+          process.env.ACCESS_TOKEN_SECRET,
+          {expiresIn: process.env.ACCESS_EXPIRES_IN});
+
+    const refreshToken =
+      jwt.sign({ id: verified.id, roles: [] },
+        process.env.REFRESH_TOKEN_SECRET,
+          { expiresIn: process.env.REFRESH_EXPIRES_IN});
+
+    await db.dbWrapper().createRefreshToken(verified.id, refreshToken);
+
+    // Set jwt refresh token in cookie as 'refresh_token'
+    res.cookie('refresh_token', refreshToken, {
+      // maxAge: 365 * 24 * 60 * 60 * 100, // session only cookie
+      maxAge: process.env.REFRESH_EXPIRES_IN,
+      httpOnly: true // cannot be modified using XSS or JS
+    });
+
+    const response = {
+        'status': 'refresh token',
+        'token': token,
+        'refreshToken': refreshToken,
+    };
+
+    res.header('auth_token', token);
+    res.json(response);
+
+
+  } catch(err) {
+    console.log(err);
+    next(ApiError.notImplemented(err.message || err));
+  }
+};
 
 module.exports = {
   registerPost,
-  loginPost
+  loginPost,
+  refreshPost,
 };
