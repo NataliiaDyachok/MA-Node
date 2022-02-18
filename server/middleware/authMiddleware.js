@@ -1,19 +1,28 @@
+const jwt = require('jsonwebtoken');
 const ApiError = require('../error/ApiError');
 
-module.exports = ((req, res, next) => {
+const authorize = (req, res, next) => {
+  try
+  {
+    const authHeader = req.header('Authorization');
+    const bearerToken = authHeader.split(' ');
+    const token = bearerToken[1];
+    if(!token)
+      return next(ApiError.authenticationRequired('Access denied.'));
 
-  const auth = {login: 'Masters', password: 'Academy'};
+    const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    // eslint-disable-next-line max-len
+    req.user = verified; // set the request "authorized" property with the validation result
 
-  // parse login and password from headers
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-  const [login, password] =
-    Buffer.from(b64auth, 'base64').toString().split(':');
-
-  // Verify login and password are set and correct
-  if (login && password && login === auth.login && password === auth.password) {
-    // Access granted...
+    // if(roles.length > 0 && !verified.roles.some(r => roles.includes(r))){
+    //   return next(ApiError.authenticationRequired('Access denied.'));
+    // }
     return next();
-  }
 
-  return next(ApiError.authenticationRequired('Authentication required.'));
-});
+  } catch(err) {
+    console.log(err);
+    return next(ApiError.notImplemented(err.message || err));
+  }
+};
+
+module.exports = { authorize };

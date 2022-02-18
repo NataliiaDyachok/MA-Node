@@ -9,11 +9,12 @@ const Sequelize = require('sequelize');
  * createTable => "items", deps: []
  * createTable => "types", deps: []
  * createTable => "products", deps: [items, type]
- * createTable => "usesr", deps: []
+ * createTable => "user", deps: []
  * createTable => "orders", deps: [users, product]
  * addIndex(item_title) => "items"
  * addIndex(type_title) => "types"
  * addIndex(user_nickname) => "users"
+ * createTable => "token", deps: [users]
  *
  */
 
@@ -190,12 +191,45 @@ const migrationCommands = (transaction) => [
       { indexName: 'user_nickname', name: 'user_nickname', transaction },
     ],
   },
+  {
+    fn: 'createTable',
+    params: [
+      'token',
+      {
+        id: {
+          type: Sequelize.UUID,
+          field: 'id',
+          primaryKey: true,
+          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          allowNull: false,
+        },
+        userId: {
+          type: Sequelize.UUID,
+          field: 'userId',
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL',
+          references: { model: 'users', key: 'id' },
+          allowNull: true,
+        },
+        token: { type: Sequelize.STRING, field: 'token', allowNull: false },
+        // expiryDate: { type: Sequelize.DATE, field: 'expiryDate', allowNull: false, },
+        createdAt: { type: Sequelize.DATE, field: 'createdAt', allowNull: false, },
+        updatedAt: { type: Sequelize.DATE, field: 'updatedAt', allowNull: false, },
+        deletedAt: { type: Sequelize.DATE, field: 'deletedAt', allowNull: true, },
+      },
+      { transaction },
+    ],
+  },
 ];
 
 const rollbackCommands = (transaction) => [
   {
     fn: 'dropTable',
     params: ['orders', { transaction }],
+  },
+  {
+    fn: 'dropTable',
+    params: ['token', { transaction }],
   },
   {
     fn: 'dropTable',
@@ -213,6 +247,7 @@ const rollbackCommands = (transaction) => [
     fn: 'dropTable',
     params: ['types', { transaction }],
   },
+
 ];
 
 const pos = 0;
@@ -254,25 +289,3 @@ module.exports = {
   info,
 };
 
-
-// module.exports = {
-//   up: async (queryInterface, Sequelize) => {
-//     /**
-//      * Add altering commands here.
-//      *
-//      * Example:
-//      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-//      */
-
-
-//   },
-
-//   down: async (queryInterface, Sequelize) => {
-//     /**
-//      * Add reverting commands here.
-//      *
-//      * Example:
-//      * await queryInterface.dropTable('users');
-//      */
-//   }
-// };
